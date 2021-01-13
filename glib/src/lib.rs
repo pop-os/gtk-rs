@@ -83,7 +83,7 @@ pub use gobject_ffi;
 #[doc(hidden)]
 pub use bitflags;
 
-pub use glib_macros::{clone, gflags, Downgrade, GBoxed, GEnum};
+pub use glib_macros::{gflags, Downgrade, GBoxed, GEnum};
 
 pub use self::byte_array::ByteArray;
 pub use self::bytes::Bytes;
@@ -108,6 +108,7 @@ pub use self::variant_dict::VariantDict;
 pub use self::variant_iter::VariantIter;
 pub use self::variant_type::{VariantTy, VariantType};
 
+#[macro_use]
 pub mod clone;
 #[macro_use]
 pub mod wrapper;
