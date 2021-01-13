@@ -101,7 +101,6 @@ pub unsafe fn connect_raw<F>(
     from_glib(handle)
 }
 
-#[doc(alias = "g_signal_handler_block")]
 pub fn signal_handler_block<T: ObjectType>(instance: &T, handler_id: &SignalHandlerId) {
     unsafe {
         gobject_ffi::g_signal_handler_block(
@@ -111,7 +110,6 @@ pub fn signal_handler_block<T: ObjectType>(instance: &T, handler_id: &SignalHand
     }
 }
 
-#[doc(alias = "g_signal_handler_unblock")]
 pub fn signal_handler_unblock<T: ObjectType>(instance: &T, handler_id: &SignalHandlerId) {
     unsafe {
         gobject_ffi::g_signal_handler_unblock(
@@ -122,7 +120,6 @@ pub fn signal_handler_unblock<T: ObjectType>(instance: &T, handler_id: &SignalHa
 }
 
 #[allow(clippy::needless_pass_by_value)]
-#[doc(alias = "g_signal_handler_disconnect")]
 pub fn signal_handler_disconnect<T: ObjectType>(instance: &T, handler_id: SignalHandlerId) {
     unsafe {
         gobject_ffi::g_signal_handler_disconnect(
@@ -132,7 +129,6 @@ pub fn signal_handler_disconnect<T: ObjectType>(instance: &T, handler_id: Signal
     }
 }
 
-#[doc(alias = "g_signal_stop_emission_by_name")]
 pub fn signal_stop_emission_by_name<T: ObjectType>(instance: &T, signal_name: &str) {
     unsafe {
         gobject_ffi::g_signal_stop_emission_by_name(

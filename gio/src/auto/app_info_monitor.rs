@@ -19,7 +19,6 @@ glib::wrapper! {
 }
 
 impl AppInfoMonitor {
-    #[doc(alias = "g_app_info_monitor_get")]
     pub fn get() -> AppInfoMonitor {
         unsafe { from_glib_full(ffi::g_app_info_monitor_get()) }
     }

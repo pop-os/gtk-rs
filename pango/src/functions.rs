@@ -8,7 +8,6 @@ use crate::ShapeFlags;
 use glib::translate::*;
 use std::ptr;
 
-#[doc(alias = "pango_reorder_items")]
 pub fn reorder_items(logical_items: &[&Item]) -> Vec<Item> {
     unsafe {
         let stash_vec: Vec<_> = logical_items
@@ -25,7 +24,6 @@ pub fn reorder_items(logical_items: &[&Item]) -> Vec<Item> {
     }
 }
 
-#[doc(alias = "pango_shape_full")]
 pub fn shape_full(
     item_text: &str,
     paragraph_text: Option<&str>,
@@ -52,7 +50,6 @@ pub fn shape_full(
 
 #[cfg(any(feature = "v1_44", feature = "dox"))]
 #[cfg_attr(feature = "dox", doc(cfg(feature = "v1_44")))]
-#[doc(alias = "pango_shape_with_flags")]
 pub fn shape_with_flags(
     item_text: &str,
     paragraph_text: Option<&str>,

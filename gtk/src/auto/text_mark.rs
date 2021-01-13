@@ -19,7 +19,6 @@ glib::wrapper! {
 }
 
 impl TextMark {
-    #[doc(alias = "gtk_text_mark_new")]
     pub fn new(name: Option<&str>, left_gravity: bool) -> TextMark {
         assert_initialized_main_thread!();
         unsafe {
@@ -68,22 +67,16 @@ impl TextMarkBuilder {
 pub const NONE_TEXT_MARK: Option<&TextMark> = None;
 
 pub trait TextMarkExt: 'static {
-    #[doc(alias = "gtk_text_mark_get_buffer")]
     fn get_buffer(&self) -> Option<TextBuffer>;
 
-    #[doc(alias = "gtk_text_mark_get_deleted")]
     fn get_deleted(&self) -> bool;
 
-    #[doc(alias = "gtk_text_mark_get_left_gravity")]
     fn get_left_gravity(&self) -> bool;
 
-    #[doc(alias = "gtk_text_mark_get_name")]
     fn get_name(&self) -> Option<glib::GString>;
 
-    #[doc(alias = "gtk_text_mark_get_visible")]
     fn get_visible(&self) -> bool;
 
-    #[doc(alias = "gtk_text_mark_set_visible")]
     fn set_visible(&self, setting: bool);
 }
 

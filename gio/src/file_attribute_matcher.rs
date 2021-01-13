@@ -9,7 +9,6 @@ pub struct FileAttributematcherIter(crate::FileAttributeMatcher);
 impl Iterator for FileAttributematcherIter {
     type Item = GString;
 
-    #[doc(alias = "g_file_attribute_matcher_enumerate_next")]
     fn next(&mut self) -> Option<GString> {
         unsafe {
             from_glib_none(ffi::g_file_attribute_matcher_enumerate_next(

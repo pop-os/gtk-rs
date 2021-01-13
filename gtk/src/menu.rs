@@ -10,7 +10,6 @@ use std::boxed::Box as Box_;
 use std::ptr;
 
 pub trait GtkMenuExtManual: 'static {
-    #[doc(alias = "gtk_menu_popup")]
     fn popup<T: IsA<Widget>, U: IsA<Widget>, F: Fn(&Self, &mut i32, &mut i32) -> bool + 'static>(
         &self,
         parent_menu_shell: Option<&T>,
@@ -20,7 +19,6 @@ pub trait GtkMenuExtManual: 'static {
         activate_time: u32,
     );
 
-    #[doc(alias = "gtk_menu_popup_easy")]
     fn popup_easy(&self, button: u32, activate_time: u32);
 }
 

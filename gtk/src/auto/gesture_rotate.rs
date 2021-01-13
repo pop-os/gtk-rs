@@ -27,7 +27,6 @@ glib::wrapper! {
 }
 
 impl GestureRotate {
-    #[doc(alias = "gtk_gesture_rotate_new")]
     pub fn new<P: IsA<Widget>>(widget: &P) -> GestureRotate {
         skip_assert_initialized!();
         unsafe {
@@ -38,7 +37,6 @@ impl GestureRotate {
         }
     }
 
-    #[doc(alias = "gtk_gesture_rotate_get_angle_delta")]
     pub fn get_angle_delta(&self) -> f64 {
         unsafe { ffi::gtk_gesture_rotate_get_angle_delta(self.to_glib_none().0) }
     }

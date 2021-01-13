@@ -18,7 +18,6 @@ pub trait ConverterExtManual {
 }
 
 impl<O: IsA<Converter>> ConverterExtManual for O {
-    #[doc(alias = "g_converter_convert")]
     fn convert<IN: AsRef<[u8]>, OUT: AsMut<[u8]>>(
         &self,
         inbuf: IN,

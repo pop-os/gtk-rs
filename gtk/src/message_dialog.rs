@@ -12,7 +12,6 @@ use libc::c_char;
 use std::ptr;
 
 impl MessageDialog {
-    #[doc(alias = "gtk_message_dialog_new")]
     pub fn new<T: IsA<Window>>(
         parent: Option<&T>,
         flags: DialogFlags,
@@ -38,10 +37,8 @@ impl MessageDialog {
 }
 
 pub trait MessageDialogExt: 'static {
-    #[doc(alias = "gtk_message_dialog_format_secondary_markup")]
     fn set_secondary_markup(&self, message: Option<&str>);
 
-    #[doc(alias = "gtk_message_dialog_format_secondary_text")]
     fn set_secondary_text(&self, message: Option<&str>);
 }
 

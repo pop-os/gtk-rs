@@ -24,7 +24,6 @@ glib::wrapper! {
 }
 
 impl CharsetConverter {
-    #[doc(alias = "g_charset_converter_new")]
     pub fn new(to_charset: &str, from_charset: &str) -> Result<CharsetConverter, glib::Error> {
         unsafe {
             let mut error = ptr::null_mut();
@@ -41,12 +40,10 @@ impl CharsetConverter {
         }
     }
 
-    #[doc(alias = "g_charset_converter_get_num_fallbacks")]
     pub fn get_num_fallbacks(&self) -> u32 {
         unsafe { ffi::g_charset_converter_get_num_fallbacks(self.to_glib_none().0) }
     }
 
-    #[doc(alias = "g_charset_converter_get_use_fallback")]
     pub fn get_use_fallback(&self) -> bool {
         unsafe {
             from_glib(ffi::g_charset_converter_get_use_fallback(
@@ -55,7 +52,6 @@ impl CharsetConverter {
         }
     }
 
-    #[doc(alias = "g_charset_converter_set_use_fallback")]
     pub fn set_use_fallback(&self, use_fallback: bool) {
         unsafe {
             ffi::g_charset_converter_set_use_fallback(

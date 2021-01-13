@@ -19,13 +19,10 @@ glib::wrapper! {
 pub const NONE_SEEKABLE: Option<&Seekable> = None;
 
 pub trait SeekableExt: 'static {
-    #[doc(alias = "g_seekable_can_seek")]
     fn can_seek(&self) -> bool;
 
-    #[doc(alias = "g_seekable_can_truncate")]
     fn can_truncate(&self) -> bool;
 
-    #[doc(alias = "g_seekable_seek")]
     fn seek<P: IsA<Cancellable>>(
         &self,
         offset: i64,
@@ -33,10 +30,8 @@ pub trait SeekableExt: 'static {
         cancellable: Option<&P>,
     ) -> Result<(), glib::Error>;
 
-    #[doc(alias = "g_seekable_tell")]
     fn tell(&self) -> i64;
 
-    #[doc(alias = "g_seekable_truncate")]
     fn truncate<P: IsA<Cancellable>>(
         &self,
         offset: i64,

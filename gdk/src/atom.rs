@@ -27,7 +27,6 @@ pub const SELECTION_TYPE_WINDOW: Atom = Atom(33 as *mut _);
 pub const SELECTION_TYPE_STRING: Atom = Atom(31 as *mut _);
 
 impl Atom {
-    #[doc(alias = "gdk_atom_intern")]
     pub fn intern(atom_name: &str) -> Atom {
         assert_initialized_main_thread!();
         unsafe {
@@ -38,7 +37,6 @@ impl Atom {
         }
     }
 
-    #[doc(alias = "gdk_atom_name")]
     pub fn name(self) -> GString {
         unsafe { from_glib_full(ffi::gdk_atom_name(self.0)) }
     }

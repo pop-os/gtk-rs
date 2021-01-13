@@ -11,7 +11,6 @@ use std::ptr;
 use crate::KeyFile;
 
 impl KeyFile {
-    #[doc(alias = "g_key_file_save_to_file")]
     pub fn save_to_file<T: AsRef<std::path::Path>>(&self, filename: T) -> Result<(), Error> {
         unsafe {
             let mut error = ptr::null_mut();
@@ -28,7 +27,6 @@ impl KeyFile {
         }
     }
 
-    #[doc(alias = "g_key_file_load_from_data_dirs")]
     pub fn load_from_data_dirs<T: AsRef<std::path::Path>>(
         &self,
         file: T,
@@ -53,7 +51,6 @@ impl KeyFile {
         }
     }
 
-    #[doc(alias = "g_key_file_load_from_dirs")]
     pub fn load_from_dirs<T: AsRef<std::path::Path>, U: AsRef<std::path::Path>>(
         &self,
         file: T,
@@ -82,7 +79,6 @@ impl KeyFile {
         }
     }
 
-    #[doc(alias = "g_key_file_to_data")]
     pub fn to_data(&self) -> GString {
         unsafe {
             let ret =
@@ -91,7 +87,6 @@ impl KeyFile {
         }
     }
 
-    #[doc(alias = "g_key_file_get_boolean")]
     pub fn get_boolean(&self, group_name: &str, key: &str) -> Result<bool, Error> {
         unsafe {
             let mut error = ptr::null_mut();
@@ -109,7 +104,6 @@ impl KeyFile {
         }
     }
 
-    #[doc(alias = "g_key_file_has_key")]
     pub fn has_key(&self, group_name: &str, key: &str) -> Result<bool, Error> {
         unsafe {
             let mut error = ptr::null_mut();
@@ -127,7 +121,6 @@ impl KeyFile {
         }
     }
 
-    #[doc(alias = "g_key_file_get_boolean_list")]
     pub fn get_boolean_list(&self, group_name: &str, key: &str) -> Result<Vec<bool>, Error> {
         unsafe {
             let mut length = mem::MaybeUninit::uninit();
@@ -149,7 +142,6 @@ impl KeyFile {
         }
     }
 
-    #[doc(alias = "g_key_file_get_string")]
     pub fn get_string(&self, group_name: &str, key: &str) -> Result<GString, Error> {
         unsafe {
             let mut error = ptr::null_mut();
@@ -170,7 +162,6 @@ impl KeyFile {
         }
     }
 
-    #[doc(alias = "g_key_file_get_string_list")]
     pub fn get_string_list(&self, group_name: &str, key: &str) -> Result<Vec<GString>, Error> {
         unsafe {
             let mut length = mem::MaybeUninit::uninit();
@@ -196,7 +187,6 @@ impl KeyFile {
         }
     }
 
-    #[doc(alias = "g_key_file_get_locale_string")]
     pub fn get_locale_string(
         &self,
         group_name: &str,
@@ -223,7 +213,6 @@ impl KeyFile {
         }
     }
 
-    #[doc(alias = "g_key_file_get_locale_string_list")]
     pub fn get_locale_string_list(
         &self,
         group_name: &str,

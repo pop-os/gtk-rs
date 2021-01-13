@@ -5,7 +5,6 @@ use crate::Vec2;
 use glib::translate::*;
 
 impl Point {
-    #[doc(alias = "graphene_point_init")]
     pub fn new(x: f32, y: f32) -> Point {
         assert_initialized_main_thread!();
         unsafe {
@@ -15,7 +14,6 @@ impl Point {
         }
     }
 
-    #[doc(alias = "graphene_point_init_from_point")]
     pub fn new_from_point(src: &Point) -> Point {
         assert_initialized_main_thread!();
         unsafe {
@@ -25,7 +23,6 @@ impl Point {
         }
     }
 
-    #[doc(alias = "graphene_point_init_from_vec2")]
     pub fn new_from_vec2(src: &Vec2) -> Point {
         assert_initialized_main_thread!();
         unsafe {

@@ -9,7 +9,6 @@ use glib::translate::*;
 use std::ptr;
 
 impl RecentChooserDialog {
-    #[doc(alias = "gtk_recent_chooser_dialog_new")]
     pub fn new<T: IsA<Window>>(title: Option<&str>, parent: Option<&T>) -> RecentChooserDialog {
         assert_initialized_main_thread!();
         unsafe {
@@ -22,7 +21,6 @@ impl RecentChooserDialog {
         }
     }
 
-    #[doc(alias = "gtk_recent_chooser_dialog_new_for_manager")]
     pub fn new_for_manager<T: IsA<Window>>(
         title: Option<&str>,
         parent: Option<&T>,

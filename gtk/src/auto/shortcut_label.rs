@@ -44,7 +44,6 @@ glib::wrapper! {
 impl ShortcutLabel {
     #[cfg(any(feature = "v3_22", feature = "dox"))]
     #[cfg_attr(feature = "dox", doc(cfg(feature = "v3_22")))]
-    #[doc(alias = "gtk_shortcut_label_new")]
     pub fn new(accelerator: &str) -> ShortcutLabel {
         assert_initialized_main_thread!();
         unsafe {
@@ -55,7 +54,6 @@ impl ShortcutLabel {
 
     #[cfg(any(feature = "v3_22", feature = "dox"))]
     #[cfg_attr(feature = "dox", doc(cfg(feature = "v3_22")))]
-    #[doc(alias = "gtk_shortcut_label_get_accelerator")]
     pub fn get_accelerator(&self) -> Option<glib::GString> {
         unsafe {
             from_glib_none(ffi::gtk_shortcut_label_get_accelerator(
@@ -66,7 +64,6 @@ impl ShortcutLabel {
 
     #[cfg(any(feature = "v3_22", feature = "dox"))]
     #[cfg_attr(feature = "dox", doc(cfg(feature = "v3_22")))]
-    #[doc(alias = "gtk_shortcut_label_get_disabled_text")]
     pub fn get_disabled_text(&self) -> Option<glib::GString> {
         unsafe {
             from_glib_none(ffi::gtk_shortcut_label_get_disabled_text(
@@ -77,7 +74,6 @@ impl ShortcutLabel {
 
     #[cfg(any(feature = "v3_22", feature = "dox"))]
     #[cfg_attr(feature = "dox", doc(cfg(feature = "v3_22")))]
-    #[doc(alias = "gtk_shortcut_label_set_accelerator")]
     pub fn set_accelerator(&self, accelerator: &str) {
         unsafe {
             ffi::gtk_shortcut_label_set_accelerator(
@@ -89,7 +85,6 @@ impl ShortcutLabel {
 
     #[cfg(any(feature = "v3_22", feature = "dox"))]
     #[cfg_attr(feature = "dox", doc(cfg(feature = "v3_22")))]
-    #[doc(alias = "gtk_shortcut_label_set_disabled_text")]
     pub fn set_disabled_text(&self, disabled_text: &str) {
         unsafe {
             ffi::gtk_shortcut_label_set_disabled_text(

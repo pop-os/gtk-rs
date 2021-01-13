@@ -4,7 +4,6 @@ use crate::Size;
 use glib::translate::*;
 
 impl Size {
-    #[doc(alias = "graphene_size_init")]
     pub fn new(width: f32, height: f32) -> Size {
         assert_initialized_main_thread!();
         unsafe {
@@ -14,7 +13,6 @@ impl Size {
         }
     }
 
-    #[doc(alias = "graphene_size_init_from_size")]
     pub fn new_from_size(src: &Size) -> Size {
         assert_initialized_main_thread!();
         unsafe {

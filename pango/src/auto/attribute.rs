@@ -30,7 +30,6 @@ glib::wrapper! {
 }
 
 impl Attribute {
-    #[doc(alias = "pango_attribute_equal")]
     fn equal(&self, attr2: &Attribute) -> bool {
         unsafe {
             from_glib(ffi::pango_attribute_equal(
@@ -40,7 +39,6 @@ impl Attribute {
         }
     }
 
-    #[doc(alias = "pango_attribute_init")]
     pub fn init(&mut self, klass: &AttrClass) {
         unsafe {
             ffi::pango_attribute_init(self.to_glib_none_mut().0, klass.to_glib_none().0);

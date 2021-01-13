@@ -16,7 +16,6 @@ glib::wrapper! {
 }
 
 impl SettingsSchemaKey {
-    #[doc(alias = "g_settings_schema_key_get_default_value")]
     pub fn get_default_value(&self) -> Option<glib::Variant> {
         unsafe {
             from_glib_full(ffi::g_settings_schema_key_get_default_value(
@@ -25,7 +24,6 @@ impl SettingsSchemaKey {
         }
     }
 
-    #[doc(alias = "g_settings_schema_key_get_description")]
     pub fn get_description(&self) -> Option<glib::GString> {
         unsafe {
             from_glib_none(ffi::g_settings_schema_key_get_description(
@@ -36,17 +34,14 @@ impl SettingsSchemaKey {
 
     #[cfg(any(feature = "v2_44", feature = "dox"))]
     #[cfg_attr(feature = "dox", doc(cfg(feature = "v2_44")))]
-    #[doc(alias = "g_settings_schema_key_get_name")]
     pub fn get_name(&self) -> Option<glib::GString> {
         unsafe { from_glib_none(ffi::g_settings_schema_key_get_name(self.to_glib_none().0)) }
     }
 
-    #[doc(alias = "g_settings_schema_key_get_range")]
     pub fn get_range(&self) -> Option<glib::Variant> {
         unsafe { from_glib_full(ffi::g_settings_schema_key_get_range(self.to_glib_none().0)) }
     }
 
-    #[doc(alias = "g_settings_schema_key_get_summary")]
     pub fn get_summary(&self) -> Option<glib::GString> {
         unsafe {
             from_glib_none(ffi::g_settings_schema_key_get_summary(
@@ -55,7 +50,6 @@ impl SettingsSchemaKey {
         }
     }
 
-    #[doc(alias = "g_settings_schema_key_get_value_type")]
     pub fn get_value_type(&self) -> Option<glib::VariantType> {
         unsafe {
             from_glib_none(ffi::g_settings_schema_key_get_value_type(
@@ -64,7 +58,6 @@ impl SettingsSchemaKey {
         }
     }
 
-    #[doc(alias = "g_settings_schema_key_range_check")]
     pub fn range_check(&self, value: &glib::Variant) -> bool {
         unsafe {
             from_glib(ffi::g_settings_schema_key_range_check(

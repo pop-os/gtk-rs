@@ -20,7 +20,6 @@ glib::wrapper! {
 }
 
 impl DisplayManager {
-    #[doc(alias = "gdk_display_manager_get_default_display")]
     pub fn get_default_display(&self) -> Option<Display> {
         unsafe {
             from_glib_none(ffi::gdk_display_manager_get_default_display(
@@ -29,7 +28,6 @@ impl DisplayManager {
         }
     }
 
-    #[doc(alias = "gdk_display_manager_list_displays")]
     pub fn list_displays(&self) -> Vec<Display> {
         unsafe {
             FromGlibPtrContainer::from_glib_container(ffi::gdk_display_manager_list_displays(
@@ -38,7 +36,6 @@ impl DisplayManager {
         }
     }
 
-    #[doc(alias = "gdk_display_manager_open_display")]
     pub fn open_display(&self, name: &str) -> Option<Display> {
         unsafe {
             from_glib_none(ffi::gdk_display_manager_open_display(
@@ -48,7 +45,6 @@ impl DisplayManager {
         }
     }
 
-    #[doc(alias = "gdk_display_manager_set_default_display")]
     pub fn set_default_display(&self, display: &Display) {
         unsafe {
             ffi::gdk_display_manager_set_default_display(
@@ -58,7 +54,6 @@ impl DisplayManager {
         }
     }
 
-    #[doc(alias = "gdk_display_manager_get")]
     pub fn get() -> DisplayManager {
         assert_initialized_main_thread!();
         unsafe { from_glib_none(ffi::gdk_display_manager_get()) }
