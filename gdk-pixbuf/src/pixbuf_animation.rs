@@ -9,7 +9,6 @@ use std::ptr;
 use std::time::SystemTime;
 
 pub trait PixbufAnimationExtManual {
-    #[doc(alias = "gdk_pixbuf_animation_get_iter")]
     fn get_iter(&self, start_time: Option<SystemTime>) -> PixbufAnimationIter;
 }
 

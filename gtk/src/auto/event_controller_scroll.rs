@@ -34,7 +34,6 @@ glib::wrapper! {
 impl EventControllerScroll {
     #[cfg(any(feature = "v3_24", feature = "dox"))]
     #[cfg_attr(feature = "dox", doc(cfg(feature = "v3_24")))]
-    #[doc(alias = "gtk_event_controller_scroll_new")]
     pub fn new<P: IsA<Widget>>(
         widget: &P,
         flags: EventControllerScrollFlags,
@@ -51,7 +50,6 @@ impl EventControllerScroll {
 
     #[cfg(any(feature = "v3_24", feature = "dox"))]
     #[cfg_attr(feature = "dox", doc(cfg(feature = "v3_24")))]
-    #[doc(alias = "gtk_event_controller_scroll_get_flags")]
     pub fn get_flags(&self) -> EventControllerScrollFlags {
         unsafe {
             from_glib(ffi::gtk_event_controller_scroll_get_flags(
@@ -62,7 +60,6 @@ impl EventControllerScroll {
 
     #[cfg(any(feature = "v3_24", feature = "dox"))]
     #[cfg_attr(feature = "dox", doc(cfg(feature = "v3_24")))]
-    #[doc(alias = "gtk_event_controller_scroll_set_flags")]
     pub fn set_flags(&self, flags: EventControllerScrollFlags) {
         unsafe {
             ffi::gtk_event_controller_scroll_set_flags(self.to_glib_none().0, flags.to_glib());

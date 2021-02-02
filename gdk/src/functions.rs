@@ -5,7 +5,6 @@ use glib::translate::*;
 #[repr(packed)]
 pub struct GRange(pub i32, pub i32);
 
-#[doc(alias = "gdk_pango_layout_line_get_clip_region")]
 pub fn pango_layout_line_get_clip_region(
     line: &pango::LayoutLine,
     x_origin: i32,
@@ -26,7 +25,6 @@ pub fn pango_layout_line_get_clip_region(
     }
 }
 
-#[doc(alias = "gdk_pango_layout_get_clip_region")]
 pub fn pango_layout_get_clip_region(
     layout: &pango::Layout,
     x_origin: i32,
@@ -47,7 +45,6 @@ pub fn pango_layout_get_clip_region(
     }
 }
 
-#[doc(alias = "gdk_setting_get")]
 pub fn setting_get(name: &str) -> Option<glib::Value> {
     assert_initialized_main_thread!();
     unsafe {
@@ -64,7 +61,6 @@ pub fn setting_get(name: &str) -> Option<glib::Value> {
     }
 }
 
-#[doc(alias = "gdk_property_change")]
 pub fn property_change(
     window: &super::Window,
     property: &super::Atom,

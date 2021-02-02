@@ -19,13 +19,10 @@ glib::wrapper! {
 pub const NONE_FONTSET: Option<&Fontset> = None;
 
 pub trait FontsetExt: 'static {
-    #[doc(alias = "pango_fontset_foreach")]
     fn foreach<P: FnMut(&Fontset, &Font) -> bool>(&self, func: P);
 
-    #[doc(alias = "pango_fontset_get_font")]
     fn get_font(&self, wc: u32) -> Option<Font>;
 
-    #[doc(alias = "pango_fontset_get_metrics")]
     fn get_metrics(&self) -> Option<FontMetrics>;
 }
 

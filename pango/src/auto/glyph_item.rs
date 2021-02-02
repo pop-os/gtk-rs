@@ -17,7 +17,6 @@ glib::wrapper! {
 }
 
 impl GlyphItem {
-    #[doc(alias = "pango_glyph_item_apply_attrs")]
     pub fn apply_attrs(&mut self, text: &str, list: &AttrList) -> Vec<GlyphItem> {
         unsafe {
             FromGlibPtrContainer::from_glib_full(ffi::pango_glyph_item_apply_attrs(
@@ -28,17 +27,14 @@ impl GlyphItem {
         }
     }
 
-    //#[doc(alias = "pango_glyph_item_get_logical_widths")]
     //pub fn get_logical_widths(&mut self, text: &str, logical_widths: &[i32]) {
     //    unsafe { TODO: call ffi:pango_glyph_item_get_logical_widths() }
     //}
 
-    //#[doc(alias = "pango_glyph_item_letter_space")]
     //pub fn letter_space(&mut self, text: &str, log_attrs: /*Ignored*/&[&LogAttr], letter_spacing: i32) {
     //    unsafe { TODO: call ffi:pango_glyph_item_letter_space() }
     //}
 
-    #[doc(alias = "pango_glyph_item_split")]
     pub fn split(&mut self, text: &str, split_index: i32) -> Option<GlyphItem> {
         unsafe {
             from_glib_full(ffi::pango_glyph_item_split(

@@ -7,7 +7,6 @@ use crate::Vec4;
 use glib::translate::*;
 
 impl Plane {
-    #[doc(alias = "graphene_plane_init")]
     pub fn new(normal: Option<&Vec3>, constant: f32) -> Plane {
         assert_initialized_main_thread!();
         unsafe {
@@ -17,7 +16,6 @@ impl Plane {
         }
     }
 
-    #[doc(alias = "graphene_plane_init_from_plane")]
     pub fn new_from_plane(src: &Plane) -> Plane {
         assert_initialized_main_thread!();
         unsafe {
@@ -27,7 +25,6 @@ impl Plane {
         }
     }
 
-    #[doc(alias = "graphene_plane_init_from_point")]
     pub fn new_from_point(normal: &Vec3, point: &Point3D) -> Plane {
         assert_initialized_main_thread!();
         unsafe {
@@ -41,7 +38,6 @@ impl Plane {
         }
     }
 
-    #[doc(alias = "graphene_plane_init_from_points")]
     pub fn new_from_points(a: &Point3D, b: &Point3D, c: &Point3D) -> Plane {
         assert_initialized_main_thread!();
         unsafe {
@@ -56,7 +52,6 @@ impl Plane {
         }
     }
 
-    #[doc(alias = "graphene_plane_init_from_vec4")]
     pub fn new_from_vec4(src: &Vec4) -> Plane {
         assert_initialized_main_thread!();
         unsafe {

@@ -19,10 +19,8 @@ glib::wrapper! {
 pub const NONE_TREE_DRAG_DEST: Option<&TreeDragDest> = None;
 
 pub trait TreeDragDestExt: 'static {
-    #[doc(alias = "gtk_tree_drag_dest_drag_data_received")]
     fn drag_data_received(&self, dest: &mut TreePath, selection_data: &mut SelectionData) -> bool;
 
-    #[doc(alias = "gtk_tree_drag_dest_row_drop_possible")]
     fn row_drop_possible(
         &self,
         dest_path: &mut TreePath,

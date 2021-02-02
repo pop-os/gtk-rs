@@ -8,7 +8,6 @@ use std::cmp;
 use std::mem;
 
 impl UnixMountEntry {
-    #[doc(alias = "g_unix_mount_at")]
     pub fn new_at<P: AsRef<std::path::Path>>(mount_path: P) -> (UnixMountEntry, u64) {
         unsafe {
             let mut time_read = mem::MaybeUninit::uninit();
@@ -23,7 +22,6 @@ impl UnixMountEntry {
 
     #[cfg(any(feature = "v2_52", feature = "dox"))]
     #[cfg_attr(feature = "dox", doc(cfg(feature = "v2_52")))]
-    #[doc(alias = "g_unix_mount_for")]
     pub fn new_for<P: AsRef<std::path::Path>>(file_path: P) -> (UnixMountEntry, u64) {
         unsafe {
             let mut time_read = mem::MaybeUninit::uninit();
@@ -36,7 +34,6 @@ impl UnixMountEntry {
         }
     }
 
-    #[doc(alias = "g_unix_mounts_get")]
     pub fn get_mounts() -> (Vec<UnixMountEntry>, u64) {
         unsafe {
             let mut time_read = mem::MaybeUninit::uninit();
@@ -48,7 +45,6 @@ impl UnixMountEntry {
         }
     }
 
-    #[doc(alias = "g_unix_mount_compare")]
     pub fn compare(&self, mount2: &UnixMountEntry) -> i32 {
         unsafe {
             ffi::g_unix_mount_compare(
@@ -58,7 +54,6 @@ impl UnixMountEntry {
         }
     }
 
-    #[doc(alias = "g_unix_mount_get_device_path")]
     pub fn get_device_path(&self) -> Option<std::path::PathBuf> {
         unsafe {
             from_glib_none(ffi::g_unix_mount_get_device_path(mut_override(
@@ -67,7 +62,6 @@ impl UnixMountEntry {
         }
     }
 
-    #[doc(alias = "g_unix_mount_get_fs_type")]
     pub fn get_fs_type(&self) -> Option<GString> {
         unsafe {
             from_glib_none(ffi::g_unix_mount_get_fs_type(mut_override(
@@ -76,7 +70,6 @@ impl UnixMountEntry {
         }
     }
 
-    #[doc(alias = "g_unix_mount_get_mount_path")]
     pub fn unix_mount_get_mount_path(&self) -> Option<std::path::PathBuf> {
         unsafe {
             from_glib_none(ffi::g_unix_mount_get_mount_path(mut_override(
@@ -87,7 +80,6 @@ impl UnixMountEntry {
 
     #[cfg(any(feature = "v2_58", feature = "dox"))]
     #[cfg_attr(feature = "dox", doc(cfg(feature = "v2_58")))]
-    #[doc(alias = "g_unix_mount_get_options")]
     pub fn get_options(&self) -> Option<GString> {
         unsafe {
             from_glib_none(ffi::g_unix_mount_get_options(mut_override(
@@ -98,7 +90,6 @@ impl UnixMountEntry {
 
     #[cfg(any(feature = "v2_60", feature = "dox"))]
     #[cfg_attr(feature = "dox", doc(cfg(feature = "v2_60")))]
-    #[doc(alias = "g_unix_mount_get_root_path")]
     pub fn get_root_path(&self) -> Option<std::path::PathBuf> {
         unsafe {
             from_glib_none(ffi::g_unix_mount_get_root_path(mut_override(
@@ -107,7 +98,6 @@ impl UnixMountEntry {
         }
     }
 
-    #[doc(alias = "g_unix_mount_guess_can_eject")]
     pub fn guess_can_eject(&self) -> bool {
         unsafe {
             from_glib(ffi::g_unix_mount_guess_can_eject(mut_override(
@@ -116,7 +106,6 @@ impl UnixMountEntry {
         }
     }
 
-    #[doc(alias = "g_unix_mount_guess_icon")]
     pub fn guess_icon(&self) -> Option<Icon> {
         unsafe {
             from_glib_full(ffi::g_unix_mount_guess_icon(mut_override(
@@ -125,7 +114,6 @@ impl UnixMountEntry {
         }
     }
 
-    #[doc(alias = "g_unix_mount_guess_name")]
     pub fn guess_name(&self) -> Option<GString> {
         unsafe {
             from_glib_full(ffi::g_unix_mount_guess_name(mut_override(
@@ -134,7 +122,6 @@ impl UnixMountEntry {
         }
     }
 
-    #[doc(alias = "g_unix_mount_guess_should_display")]
     pub fn guess_should_display(&self) -> bool {
         unsafe {
             from_glib(ffi::g_unix_mount_guess_should_display(mut_override(
@@ -143,7 +130,6 @@ impl UnixMountEntry {
         }
     }
 
-    #[doc(alias = "g_unix_mount_guess_symbolic_icon")]
     pub fn guess_symbolic_icon(&self) -> Option<Icon> {
         unsafe {
             from_glib_full(ffi::g_unix_mount_guess_symbolic_icon(mut_override(
@@ -152,7 +138,6 @@ impl UnixMountEntry {
         }
     }
 
-    #[doc(alias = "g_unix_mount_is_readonly")]
     pub fn is_readonly(&self) -> bool {
         unsafe {
             from_glib(ffi::g_unix_mount_is_readonly(mut_override(
@@ -161,7 +146,6 @@ impl UnixMountEntry {
         }
     }
 
-    #[doc(alias = "g_unix_mount_is_system_internal")]
     pub fn is_system_internal(&self) -> bool {
         unsafe {
             from_glib(ffi::g_unix_mount_is_system_internal(mut_override(
@@ -170,7 +154,6 @@ impl UnixMountEntry {
         }
     }
 
-    #[doc(alias = "g_unix_mounts_changed_since")]
     pub fn is_changed_since(time: u64) -> bool {
         unsafe { from_glib(ffi::g_unix_mounts_changed_since(time)) }
     }

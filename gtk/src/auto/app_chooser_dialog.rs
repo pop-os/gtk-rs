@@ -35,7 +35,6 @@ glib::wrapper! {
 }
 
 impl AppChooserDialog {
-    #[doc(alias = "gtk_app_chooser_dialog_new")]
     pub fn new<P: IsA<Window>, Q: IsA<gio::File>>(
         parent: Option<&P>,
         flags: DialogFlags,
@@ -52,7 +51,6 @@ impl AppChooserDialog {
         }
     }
 
-    #[doc(alias = "gtk_app_chooser_dialog_new_for_content_type")]
     pub fn new_for_content_type<P: IsA<Window>>(
         parent: Option<&P>,
         flags: DialogFlags,
@@ -697,13 +695,10 @@ impl AppChooserDialogBuilder {
 pub const NONE_APP_CHOOSER_DIALOG: Option<&AppChooserDialog> = None;
 
 pub trait AppChooserDialogExt: 'static {
-    #[doc(alias = "gtk_app_chooser_dialog_get_heading")]
     fn get_heading(&self) -> Option<glib::GString>;
 
-    #[doc(alias = "gtk_app_chooser_dialog_get_widget")]
     fn get_widget(&self) -> Widget;
 
-    #[doc(alias = "gtk_app_chooser_dialog_set_heading")]
     fn set_heading(&self, heading: &str);
 
     fn get_property_gfile(&self) -> Option<gio::File>;

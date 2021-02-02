@@ -36,7 +36,6 @@ glib::wrapper! {
 }
 
 impl Ray {
-    #[doc(alias = "graphene_ray_equal")]
     fn equal(&self, b: &Ray) -> bool {
         unsafe {
             from_glib(ffi::graphene_ray_equal(
@@ -46,7 +45,6 @@ impl Ray {
         }
     }
 
-    #[doc(alias = "graphene_ray_get_closest_point_to_point")]
     pub fn get_closest_point_to_point(&self, p: &Point3D) -> Point3D {
         unsafe {
             let mut res = Point3D::uninitialized();
@@ -59,7 +57,6 @@ impl Ray {
         }
     }
 
-    #[doc(alias = "graphene_ray_get_direction")]
     pub fn get_direction(&self) -> Vec3 {
         unsafe {
             let mut direction = Vec3::uninitialized();
@@ -68,21 +65,18 @@ impl Ray {
         }
     }
 
-    #[doc(alias = "graphene_ray_get_distance_to_plane")]
     pub fn get_distance_to_plane(&self, p: &Plane) -> f32 {
         unsafe {
             ffi::graphene_ray_get_distance_to_plane(self.to_glib_none().0, p.to_glib_none().0)
         }
     }
 
-    #[doc(alias = "graphene_ray_get_distance_to_point")]
     pub fn get_distance_to_point(&self, p: &Point3D) -> f32 {
         unsafe {
             ffi::graphene_ray_get_distance_to_point(self.to_glib_none().0, p.to_glib_none().0)
         }
     }
 
-    #[doc(alias = "graphene_ray_get_origin")]
     pub fn get_origin(&self) -> Point3D {
         unsafe {
             let mut origin = Point3D::uninitialized();
@@ -91,7 +85,6 @@ impl Ray {
         }
     }
 
-    #[doc(alias = "graphene_ray_get_position_at")]
     pub fn get_position_at(&self, t: f32) -> Point3D {
         unsafe {
             let mut position = Point3D::uninitialized();
@@ -104,7 +97,6 @@ impl Ray {
         }
     }
 
-    #[doc(alias = "graphene_ray_init")]
     pub fn init(&mut self, origin: Option<&Point3D>, direction: Option<&Vec3>) {
         unsafe {
             ffi::graphene_ray_init(
@@ -115,14 +107,12 @@ impl Ray {
         }
     }
 
-    #[doc(alias = "graphene_ray_init_from_ray")]
     pub fn init_from_ray(&mut self, src: &Ray) {
         unsafe {
             ffi::graphene_ray_init_from_ray(self.to_glib_none_mut().0, src.to_glib_none().0);
         }
     }
 
-    #[doc(alias = "graphene_ray_init_from_vec3")]
     pub fn init_from_vec3(&mut self, origin: Option<&Vec3>, direction: Option<&Vec3>) {
         unsafe {
             ffi::graphene_ray_init_from_vec3(
@@ -135,7 +125,6 @@ impl Ray {
 
     #[cfg(any(feature = "v1_10", feature = "dox"))]
     #[cfg_attr(feature = "dox", doc(cfg(feature = "v1_10")))]
-    #[doc(alias = "graphene_ray_intersect_box")]
     pub fn intersect_box(&self, b: &Box) -> (RayIntersectionKind, f32) {
         unsafe {
             let mut t_out = mem::MaybeUninit::uninit();
@@ -151,7 +140,6 @@ impl Ray {
 
     #[cfg(any(feature = "v1_10", feature = "dox"))]
     #[cfg_attr(feature = "dox", doc(cfg(feature = "v1_10")))]
-    #[doc(alias = "graphene_ray_intersect_sphere")]
     pub fn intersect_sphere(&self, s: &Sphere) -> (RayIntersectionKind, f32) {
         unsafe {
             let mut t_out = mem::MaybeUninit::uninit();
@@ -167,7 +155,6 @@ impl Ray {
 
     #[cfg(any(feature = "v1_10", feature = "dox"))]
     #[cfg_attr(feature = "dox", doc(cfg(feature = "v1_10")))]
-    #[doc(alias = "graphene_ray_intersect_triangle")]
     pub fn intersect_triangle(&self, t: &Triangle) -> (RayIntersectionKind, f32) {
         unsafe {
             let mut t_out = mem::MaybeUninit::uninit();
@@ -183,7 +170,6 @@ impl Ray {
 
     #[cfg(any(feature = "v1_10", feature = "dox"))]
     #[cfg_attr(feature = "dox", doc(cfg(feature = "v1_10")))]
-    #[doc(alias = "graphene_ray_intersects_box")]
     pub fn intersects_box(&self, b: &Box) -> bool {
         unsafe {
             from_glib(ffi::graphene_ray_intersects_box(
@@ -195,7 +181,6 @@ impl Ray {
 
     #[cfg(any(feature = "v1_10", feature = "dox"))]
     #[cfg_attr(feature = "dox", doc(cfg(feature = "v1_10")))]
-    #[doc(alias = "graphene_ray_intersects_sphere")]
     pub fn intersects_sphere(&self, s: &Sphere) -> bool {
         unsafe {
             from_glib(ffi::graphene_ray_intersects_sphere(
@@ -207,7 +192,6 @@ impl Ray {
 
     #[cfg(any(feature = "v1_10", feature = "dox"))]
     #[cfg_attr(feature = "dox", doc(cfg(feature = "v1_10")))]
-    #[doc(alias = "graphene_ray_intersects_triangle")]
     pub fn intersects_triangle(&self, t: &Triangle) -> bool {
         unsafe {
             from_glib(ffi::graphene_ray_intersects_triangle(

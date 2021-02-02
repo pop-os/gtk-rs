@@ -109,8 +109,6 @@ pub trait SettingsExtManual {
 
     fn set<U: ToVariant>(&self, key: &str, value: &U) -> Result<(), BoolError>;
 
-    #[doc(alias = "g_settings_bind")]
-    #[doc(alias = "g_settings_bind_with_mapping")]
     fn bind<'a, P: IsA<glib::Object>>(
         &'a self,
         key: &'a str,

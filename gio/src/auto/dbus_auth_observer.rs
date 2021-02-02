@@ -22,12 +22,10 @@ glib::wrapper! {
 }
 
 impl DBusAuthObserver {
-    #[doc(alias = "g_dbus_auth_observer_new")]
     pub fn new() -> DBusAuthObserver {
         unsafe { from_glib_full(ffi::g_dbus_auth_observer_new()) }
     }
 
-    #[doc(alias = "g_dbus_auth_observer_allow_mechanism")]
     pub fn allow_mechanism(&self, mechanism: &str) -> bool {
         unsafe {
             from_glib(ffi::g_dbus_auth_observer_allow_mechanism(
@@ -37,7 +35,6 @@ impl DBusAuthObserver {
         }
     }
 
-    #[doc(alias = "g_dbus_auth_observer_authorize_authenticated_peer")]
     pub fn authorize_authenticated_peer<P: IsA<IOStream>>(
         &self,
         stream: &P,

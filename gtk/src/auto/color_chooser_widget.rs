@@ -32,7 +32,6 @@ glib::wrapper! {
 }
 
 impl ColorChooserWidget {
-    #[doc(alias = "gtk_color_chooser_widget_new")]
     pub fn new() -> ColorChooserWidget {
         assert_initialized_main_thread!();
         unsafe { Widget::from_glib_none(ffi::gtk_color_chooser_widget_new()).unsafe_cast() }

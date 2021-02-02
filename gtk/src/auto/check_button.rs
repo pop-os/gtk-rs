@@ -29,13 +29,11 @@ glib::wrapper! {
 }
 
 impl CheckButton {
-    #[doc(alias = "gtk_check_button_new")]
     pub fn new() -> CheckButton {
         assert_initialized_main_thread!();
         unsafe { Widget::from_glib_none(ffi::gtk_check_button_new()).unsafe_cast() }
     }
 
-    #[doc(alias = "gtk_check_button_new_with_label")]
     pub fn with_label(label: &str) -> CheckButton {
         assert_initialized_main_thread!();
         unsafe {
@@ -44,7 +42,6 @@ impl CheckButton {
         }
     }
 
-    #[doc(alias = "gtk_check_button_new_with_mnemonic")]
     pub fn with_mnemonic(label: &str) -> CheckButton {
         assert_initialized_main_thread!();
         unsafe {

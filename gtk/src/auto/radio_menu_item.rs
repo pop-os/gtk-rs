@@ -32,7 +32,6 @@ glib::wrapper! {
 }
 
 impl RadioMenuItem {
-    #[doc(alias = "gtk_radio_menu_item_new_from_widget")]
     pub fn from_widget<P: IsA<RadioMenuItem>>(group: &P) -> RadioMenuItem {
         skip_assert_initialized!();
         unsafe {
@@ -43,7 +42,6 @@ impl RadioMenuItem {
         }
     }
 
-    #[doc(alias = "gtk_radio_menu_item_new_with_label_from_widget")]
     pub fn with_label_from_widget<P: IsA<RadioMenuItem>>(
         group: &P,
         label: Option<&str>,
@@ -58,7 +56,6 @@ impl RadioMenuItem {
         }
     }
 
-    #[doc(alias = "gtk_radio_menu_item_new_with_mnemonic_from_widget")]
     pub fn with_mnemonic_from_widget<P: IsA<RadioMenuItem>>(
         group: &P,
         label: Option<&str>,
@@ -503,12 +500,10 @@ impl RadioMenuItemBuilder {
 pub const NONE_RADIO_MENU_ITEM: Option<&RadioMenuItem> = None;
 
 pub trait RadioMenuItemExt: 'static {
-    #[doc(alias = "gtk_radio_menu_item_get_group")]
     fn get_group(&self) -> Vec<RadioMenuItem>;
 
     #[cfg(any(feature = "v3_18", feature = "dox"))]
     #[cfg_attr(feature = "dox", doc(cfg(feature = "v3_18")))]
-    #[doc(alias = "gtk_radio_menu_item_join_group")]
     fn join_group<P: IsA<RadioMenuItem>>(&self, group_source: Option<&P>);
 
     fn connect_group_changed<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId;

@@ -148,7 +148,6 @@ fn into_raw_unix_fd<F: FnMut(RawFd, IOCondition) -> Continue + 'static>(func: F)
 ///
 /// The default main loop almost always is the main loop of the main thread.
 /// Thus the closure is called on the main thread.
-#[doc(alias = "g_idle_add_full")]
 pub fn idle_add<F>(func: F) -> SourceId
 where
     F: FnMut() -> Continue + Send + 'static,
@@ -175,7 +174,6 @@ where
 ///
 /// This function panics if called from a different thread than the one that
 /// owns the main context.
-#[doc(alias = "g_idle_add_full")]
 pub fn idle_add_local<F>(func: F) -> SourceId
 where
     F: FnMut() -> Continue + 'static,
@@ -201,7 +199,6 @@ where
 ///
 /// The default main loop almost always is the main loop of the main thread.
 /// Thus the closure is called on the main thread.
-#[doc(alias = "g_timeout_add_full")]
 pub fn timeout_add<F>(interval: Duration, func: F) -> SourceId
 where
     F: FnMut() -> Continue + Send + 'static,
@@ -233,7 +230,6 @@ where
 ///
 /// This function panics if called from a different thread than the one that
 /// owns the main context.
-#[doc(alias = "g_timeout_add_full")]
 pub fn timeout_add_local<F>(interval: Duration, func: F) -> SourceId
 where
     F: FnMut() -> Continue + 'static,
@@ -259,7 +255,6 @@ where
 ///
 /// The default main loop almost always is the main loop of the main thread.
 /// Thus the closure is called on the main thread.
-#[doc(alias = "g_timeout_add_seconds_full")]
 pub fn timeout_add_seconds<F>(interval: u32, func: F) -> SourceId
 where
     F: FnMut() -> Continue + Send + 'static,
@@ -290,7 +285,6 @@ where
 ///
 /// This function panics if called from a different thread than the one that
 /// owns the main context.
-#[doc(alias = "g_timeout_add_seconds_full")]
 pub fn timeout_add_seconds_local<F>(interval: u32, func: F) -> SourceId
 where
     F: FnMut() -> Continue + 'static,
@@ -311,7 +305,6 @@ where
 /// process exits.
 ///
 /// `func` will be called when `pid` exits
-#[doc(alias = "g_child_watch_add_full")]
 pub fn child_watch_add<F>(pid: Pid, func: F) -> SourceId
 where
     F: FnMut(Pid, i32) + Send + 'static,
@@ -337,7 +330,6 @@ where
 ///
 /// This function panics if called from a different thread than the one that
 /// owns the main context.
-#[doc(alias = "g_child_watch_add_full")]
 pub fn child_watch_add_local<F>(pid: Pid, func: F) -> SourceId
 where
     F: FnMut(Pid, i32) + 'static,
@@ -363,7 +355,6 @@ where
 ///
 /// The default main loop almost always is the main loop of the main thread.
 /// Thus the closure is called on the main thread.
-#[doc(alias = "g_unix_signal_add_full")]
 pub fn unix_signal_add<F>(signum: i32, func: F) -> SourceId
 where
     F: FnMut() -> Continue + Send + 'static,
@@ -394,7 +385,6 @@ where
 ///
 /// This function panics if called from a different thread than the one that
 /// owns the main context.
-#[doc(alias = "g_unix_signal_add_full")]
 pub fn unix_signal_add_local<F>(signum: i32, func: F) -> SourceId
 where
     F: FnMut() -> Continue + 'static,
@@ -421,7 +411,6 @@ where
 ///
 /// The default main loop almost always is the main loop of the main thread.
 /// Thus the closure is called on the main thread.
-#[doc(alias = "g_unix_fd_add_full")]
 pub fn unix_fd_add<F>(fd: RawFd, condition: IOCondition, func: F) -> SourceId
 where
     F: FnMut(RawFd, IOCondition) -> Continue + Send + 'static,
@@ -454,7 +443,6 @@ where
 ///
 /// This function panics if called from a different thread than the one that
 /// owns the main context.
-#[doc(alias = "g_unix_fd_add_full")]
 pub fn unix_fd_add_local<F>(fd: RawFd, condition: IOCondition, func: F) -> SourceId
 where
     F: FnMut(RawFd, IOCondition) -> Continue + 'static,
@@ -524,7 +512,6 @@ pub const PRIORITY_LOW: Priority = Priority(ffi::G_PRIORITY_LOW);
 /// Adds a closure to be called by the main loop the return `Source` is attached to when it's idle.
 ///
 /// `func` will be called repeatedly until it returns `Continue(false)`.
-#[doc(alias = "g_idle_source_new")]
 pub fn idle_source_new<F>(name: Option<&str>, priority: Priority, func: F) -> Source
 where
     F: FnMut() -> Continue + Send + 'static,
@@ -554,7 +541,6 @@ where
 /// returns `Continue(false)`. Precise timing is not guaranteed, the timeout may
 /// be delayed by other events. Prefer `timeout_add_seconds` when millisecond
 /// precision is not necessary.
-#[doc(alias = "g_timeout_source_new")]
 pub fn timeout_source_new<F>(
     interval: Duration,
     name: Option<&str>,
@@ -588,7 +574,6 @@ where
 /// `func` will be called repeatedly every `interval` seconds until it
 /// returns `Continue(false)`. Precise timing is not guaranteed, the timeout may
 /// be delayed by other events.
-#[doc(alias = "g_timeout_source_new_seconds")]
 pub fn timeout_source_new_seconds<F>(
     interval: u32,
     name: Option<&str>,
@@ -620,7 +605,6 @@ where
 /// process exits.
 ///
 /// `func` will be called when `pid` exits
-#[doc(alias = "g_child_watch_source_new")]
 pub fn child_watch_source_new<F>(
     pid: Pid,
     name: Option<&str>,
@@ -658,7 +642,6 @@ where
 ///
 /// `func` will be called repeatedly every time `signum` is raised until it
 /// returns `Continue(false)`.
-#[doc(alias = "g_unix_signal_source_new")]
 pub fn unix_signal_source_new<F>(
     signum: i32,
     name: Option<&str>,
@@ -693,7 +676,6 @@ where
 ///
 /// `func` will be called repeatedly while the file descriptor matches the given IO condition
 /// until it returns `Continue(false)`.
-#[doc(alias = "g_unix_fd_source_new")]
 pub fn unix_fd_source_new<F>(
     fd: RawFd,
     condition: IOCondition,
@@ -726,7 +708,6 @@ where
 }
 
 impl Source {
-    #[doc(alias = "g_source_attach")]
     pub fn attach(&self, context: Option<&MainContext>) -> SourceId {
         unsafe {
             from_glib(ffi::g_source_attach(
@@ -736,7 +717,6 @@ impl Source {
         }
     }
 
-    #[doc(alias = "g_source_remove")]
     pub fn remove(tag: SourceId) -> Result<(), crate::BoolError> {
         unsafe {
             result_from_gboolean!(

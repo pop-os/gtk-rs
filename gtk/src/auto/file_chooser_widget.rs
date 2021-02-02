@@ -35,7 +35,6 @@ glib::wrapper! {
 }
 
 impl FileChooserWidget {
-    #[doc(alias = "gtk_file_chooser_widget_new")]
     pub fn new(action: FileChooserAction) -> FileChooserWidget {
         assert_initialized_main_thread!();
         unsafe {

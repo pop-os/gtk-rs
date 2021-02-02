@@ -6,7 +6,6 @@ use crate::Vec3;
 use glib::translate::*;
 
 impl Triangle {
-    #[doc(alias = "graphene_triangle_init_from_point3d")]
     pub fn new_from_point3d(
         a: Option<&Point3D>,
         b: Option<&Point3D>,
@@ -25,7 +24,6 @@ impl Triangle {
         }
     }
 
-    #[doc(alias = "graphene_triangle_init_from_vec3")]
     pub fn new_from_vec3(a: Option<&Vec3>, b: Option<&Vec3>, c: Option<&Vec3>) -> Triangle {
         assert_initialized_main_thread!();
         unsafe {

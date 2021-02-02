@@ -18,7 +18,6 @@ glib::wrapper! {
 }
 
 impl SettingsSchemaSource {
-    #[doc(alias = "g_settings_schema_source_new_from_directory")]
     pub fn from_directory<P: AsRef<std::path::Path>>(
         directory: P,
         parent: Option<&SettingsSchemaSource>,
@@ -40,7 +39,6 @@ impl SettingsSchemaSource {
         }
     }
 
-    #[doc(alias = "g_settings_schema_source_list_schemas")]
     pub fn list_schemas(&self, recursive: bool) -> (Vec<glib::GString>, Vec<glib::GString>) {
         unsafe {
             let mut non_relocatable = ptr::null_mut();
@@ -58,7 +56,6 @@ impl SettingsSchemaSource {
         }
     }
 
-    #[doc(alias = "g_settings_schema_source_lookup")]
     pub fn lookup(&self, schema_id: &str, recursive: bool) -> Option<SettingsSchema> {
         unsafe {
             from_glib_full(ffi::g_settings_schema_source_lookup(
@@ -69,7 +66,6 @@ impl SettingsSchemaSource {
         }
     }
 
-    #[doc(alias = "g_settings_schema_source_get_default")]
     pub fn get_default() -> Option<SettingsSchemaSource> {
         unsafe { from_glib_none(ffi::g_settings_schema_source_get_default()) }
     }

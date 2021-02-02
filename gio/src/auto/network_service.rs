@@ -21,7 +21,6 @@ glib::wrapper! {
 }
 
 impl NetworkService {
-    #[doc(alias = "g_network_service_new")]
     pub fn new(service: &str, protocol: &str, domain: &str) -> NetworkService {
         unsafe {
             from_glib_full(ffi::g_network_service_new(
@@ -36,19 +35,14 @@ impl NetworkService {
 pub const NONE_NETWORK_SERVICE: Option<&NetworkService> = None;
 
 pub trait NetworkServiceExt: 'static {
-    #[doc(alias = "g_network_service_get_domain")]
     fn get_domain(&self) -> Option<glib::GString>;
 
-    #[doc(alias = "g_network_service_get_protocol")]
     fn get_protocol(&self) -> Option<glib::GString>;
 
-    #[doc(alias = "g_network_service_get_scheme")]
     fn get_scheme(&self) -> Option<glib::GString>;
 
-    #[doc(alias = "g_network_service_get_service")]
     fn get_service(&self) -> Option<glib::GString>;
 
-    #[doc(alias = "g_network_service_set_scheme")]
     fn set_scheme(&self, scheme: &str);
 
     fn connect_property_scheme_notify<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId;

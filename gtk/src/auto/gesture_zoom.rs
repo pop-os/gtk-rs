@@ -27,7 +27,6 @@ glib::wrapper! {
 }
 
 impl GestureZoom {
-    #[doc(alias = "gtk_gesture_zoom_new")]
     pub fn new<P: IsA<Widget>>(widget: &P) -> GestureZoom {
         skip_assert_initialized!();
         unsafe {
@@ -36,7 +35,6 @@ impl GestureZoom {
         }
     }
 
-    #[doc(alias = "gtk_gesture_zoom_get_scale_delta")]
     pub fn get_scale_delta(&self) -> f64 {
         unsafe { ffi::gtk_gesture_zoom_get_scale_delta(self.to_glib_none().0) }
     }

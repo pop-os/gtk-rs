@@ -5,7 +5,6 @@ use glib::object::IsA;
 use glib::translate::*;
 
 pub trait EditableTextExtManual: 'static {
-    #[doc(alias = "atk_editable_text_insert_text")]
     fn insert_text(&self, string: &str, position: i32) -> i32;
 }
 
