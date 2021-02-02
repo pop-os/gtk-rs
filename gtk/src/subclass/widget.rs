@@ -1685,6 +1685,7 @@ impl<T> TemplateChild<T>
 where
     T: ObjectType + FromGlibPtrNone<*mut <T as ObjectType>::GlibType>,
 {
+    #[track_caller]
     pub fn get(&self) -> T {
         unsafe {
             Option::<T>::from_glib_none(self.ptr)

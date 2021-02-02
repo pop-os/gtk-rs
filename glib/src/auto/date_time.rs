@@ -22,6 +22,7 @@ crate::wrapper! {
 }
 
 impl DateTime {
+    #[doc(alias = "g_date_time_new")]
     pub fn new(
         tz: &TimeZone,
         year: i32,
@@ -47,6 +48,7 @@ impl DateTime {
 
     #[cfg(any(feature = "v2_56", feature = "dox"))]
     #[cfg_attr(feature = "dox", doc(cfg(feature = "v2_56")))]
+    #[doc(alias = "g_date_time_new_from_iso8601")]
     pub fn from_iso8601(text: &str, default_tz: Option<&TimeZone>) -> Result<DateTime, BoolError> {
         unsafe {
             Option::<_>::from_glib_full(ffi::g_date_time_new_from_iso8601(
@@ -58,15 +60,18 @@ impl DateTime {
     }
 
     //#[cfg_attr(feature = "v2_62", deprecated)]
+    //#[doc(alias = "g_date_time_new_from_timeval_local")]
     //pub fn from_timeval_local(tv: /*Ignored*/&TimeVal) -> Result<DateTime, BoolError> {
     //    unsafe { TODO: call ffi:g_date_time_new_from_timeval_local() }
     //}
 
     //#[cfg_attr(feature = "v2_62", deprecated)]
+    //#[doc(alias = "g_date_time_new_from_timeval_utc")]
     //pub fn from_timeval_utc(tv: /*Ignored*/&TimeVal) -> Result<DateTime, BoolError> {
     //    unsafe { TODO: call ffi:g_date_time_new_from_timeval_utc() }
     //}
 
+    #[doc(alias = "g_date_time_new_from_unix_local")]
     pub fn from_unix_local(t: i64) -> Result<DateTime, BoolError> {
         unsafe {
             Option::<_>::from_glib_full(ffi::g_date_time_new_from_unix_local(t))
@@ -74,6 +79,7 @@ impl DateTime {
         }
     }
 
+    #[doc(alias = "g_date_time_new_from_unix_utc")]
     pub fn from_unix_utc(t: i64) -> Result<DateTime, BoolError> {
         unsafe {
             Option::<_>::from_glib_full(ffi::g_date_time_new_from_unix_utc(t))
@@ -81,6 +87,7 @@ impl DateTime {
         }
     }
 
+    #[doc(alias = "g_date_time_new_local")]
     pub fn new_local(
         year: i32,
         month: i32,
@@ -97,6 +104,7 @@ impl DateTime {
         }
     }
 
+    #[doc(alias = "g_date_time_new_now")]
     pub fn new_now(tz: &TimeZone) -> Result<DateTime, BoolError> {
         unsafe {
             Option::<_>::from_glib_full(ffi::g_date_time_new_now(tz.to_glib_none().0))
@@ -104,6 +112,7 @@ impl DateTime {
         }
     }
 
+    #[doc(alias = "g_date_time_new_now_local")]
     pub fn new_now_local() -> Result<DateTime, BoolError> {
         unsafe {
             Option::<_>::from_glib_full(ffi::g_date_time_new_now_local())
@@ -111,6 +120,7 @@ impl DateTime {
         }
     }
 
+    #[doc(alias = "g_date_time_new_now_utc")]
     pub fn new_now_utc() -> Result<DateTime, BoolError> {
         unsafe {
             Option::<_>::from_glib_full(ffi::g_date_time_new_now_utc())
@@ -118,6 +128,7 @@ impl DateTime {
         }
     }
 
+    #[doc(alias = "g_date_time_new_utc")]
     pub fn new_utc(
         year: i32,
         month: i32,
@@ -134,6 +145,7 @@ impl DateTime {
         }
     }
 
+    #[doc(alias = "g_date_time_add")]
     pub fn add(&self, timespan: TimeSpan) -> Result<DateTime, BoolError> {
         unsafe {
             Option::<_>::from_glib_full(ffi::g_date_time_add(self.to_glib_none().0, timespan))
@@ -141,6 +153,7 @@ impl DateTime {
         }
     }
 
+    #[doc(alias = "g_date_time_add_days")]
     pub fn add_days(&self, days: i32) -> Result<DateTime, BoolError> {
         unsafe {
             Option::<_>::from_glib_full(ffi::g_date_time_add_days(self.to_glib_none().0, days))
@@ -148,6 +161,7 @@ impl DateTime {
         }
     }
 
+    #[doc(alias = "g_date_time_add_full")]
     pub fn add_full(
         &self,
         years: i32,
@@ -171,6 +185,7 @@ impl DateTime {
         }
     }
 
+    #[doc(alias = "g_date_time_add_hours")]
     pub fn add_hours(&self, hours: i32) -> Result<DateTime, BoolError> {
         unsafe {
             Option::<_>::from_glib_full(ffi::g_date_time_add_hours(self.to_glib_none().0, hours))
@@ -178,6 +193,7 @@ impl DateTime {
         }
     }
 
+    #[doc(alias = "g_date_time_add_minutes")]
     pub fn add_minutes(&self, minutes: i32) -> Result<DateTime, BoolError> {
         unsafe {
             Option::<_>::from_glib_full(ffi::g_date_time_add_minutes(
@@ -188,6 +204,7 @@ impl DateTime {
         }
     }
 
+    #[doc(alias = "g_date_time_add_months")]
     pub fn add_months(&self, months: i32) -> Result<DateTime, BoolError> {
         unsafe {
             Option::<_>::from_glib_full(ffi::g_date_time_add_months(self.to_glib_none().0, months))
@@ -195,6 +212,7 @@ impl DateTime {
         }
     }
 
+    #[doc(alias = "g_date_time_add_seconds")]
     pub fn add_seconds(&self, seconds: f64) -> Result<DateTime, BoolError> {
         unsafe {
             Option::<_>::from_glib_full(ffi::g_date_time_add_seconds(
@@ -205,6 +223,7 @@ impl DateTime {
         }
     }
 
+    #[doc(alias = "g_date_time_add_weeks")]
     pub fn add_weeks(&self, weeks: i32) -> Result<DateTime, BoolError> {
         unsafe {
             Option::<_>::from_glib_full(ffi::g_date_time_add_weeks(self.to_glib_none().0, weeks))
@@ -212,6 +231,7 @@ impl DateTime {
         }
     }
 
+    #[doc(alias = "g_date_time_add_years")]
     pub fn add_years(&self, years: i32) -> Result<DateTime, BoolError> {
         unsafe {
             Option::<_>::from_glib_full(ffi::g_date_time_add_years(self.to_glib_none().0, years))
@@ -219,10 +239,12 @@ impl DateTime {
         }
     }
 
+    #[doc(alias = "g_date_time_difference")]
     pub fn difference(&self, begin: &DateTime) -> TimeSpan {
         unsafe { ffi::g_date_time_difference(self.to_glib_none().0, begin.to_glib_none().0) }
     }
 
+    #[doc(alias = "g_date_time_format")]
     pub fn format(&self, format: &str) -> Result<crate::GString, BoolError> {
         unsafe {
             Option::<_>::from_glib_full(ffi::g_date_time_format(
@@ -235,6 +257,7 @@ impl DateTime {
 
     #[cfg(any(feature = "v2_62", feature = "dox"))]
     #[cfg_attr(feature = "dox", doc(cfg(feature = "v2_62")))]
+    #[doc(alias = "g_date_time_format_iso8601")]
     pub fn format_iso8601(&self) -> Result<crate::GString, BoolError> {
         unsafe {
             Option::<_>::from_glib_full(ffi::g_date_time_format_iso8601(self.to_glib_none().0))
@@ -242,48 +265,59 @@ impl DateTime {
         }
     }
 
+    #[doc(alias = "g_date_time_get_day_of_month")]
     pub fn get_day_of_month(&self) -> i32 {
         unsafe { ffi::g_date_time_get_day_of_month(self.to_glib_none().0) }
     }
 
+    #[doc(alias = "g_date_time_get_day_of_week")]
     pub fn get_day_of_week(&self) -> i32 {
         unsafe { ffi::g_date_time_get_day_of_week(self.to_glib_none().0) }
     }
 
+    #[doc(alias = "g_date_time_get_day_of_year")]
     pub fn get_day_of_year(&self) -> i32 {
         unsafe { ffi::g_date_time_get_day_of_year(self.to_glib_none().0) }
     }
 
+    #[doc(alias = "g_date_time_get_hour")]
     pub fn get_hour(&self) -> i32 {
         unsafe { ffi::g_date_time_get_hour(self.to_glib_none().0) }
     }
 
+    #[doc(alias = "g_date_time_get_microsecond")]
     pub fn get_microsecond(&self) -> i32 {
         unsafe { ffi::g_date_time_get_microsecond(self.to_glib_none().0) }
     }
 
+    #[doc(alias = "g_date_time_get_minute")]
     pub fn get_minute(&self) -> i32 {
         unsafe { ffi::g_date_time_get_minute(self.to_glib_none().0) }
     }
 
+    #[doc(alias = "g_date_time_get_month")]
     pub fn get_month(&self) -> i32 {
         unsafe { ffi::g_date_time_get_month(self.to_glib_none().0) }
     }
 
+    #[doc(alias = "g_date_time_get_second")]
     pub fn get_second(&self) -> i32 {
         unsafe { ffi::g_date_time_get_second(self.to_glib_none().0) }
     }
 
+    #[doc(alias = "g_date_time_get_seconds")]
     pub fn get_seconds(&self) -> f64 {
         unsafe { ffi::g_date_time_get_seconds(self.to_glib_none().0) }
     }
 
     #[cfg(any(feature = "v2_58", feature = "dox"))]
     #[cfg_attr(feature = "dox", doc(cfg(feature = "v2_58")))]
+    #[doc(alias = "g_date_time_get_timezone")]
     pub fn get_timezone(&self) -> TimeZone {
         unsafe { from_glib_none(ffi::g_date_time_get_timezone(self.to_glib_none().0)) }
     }
 
+    #[doc(alias = "g_date_time_get_timezone_abbreviation")]
     pub fn get_timezone_abbreviation(&self) -> crate::GString {
         unsafe {
             from_glib_none(ffi::g_date_time_get_timezone_abbreviation(
@@ -292,22 +326,27 @@ impl DateTime {
         }
     }
 
+    #[doc(alias = "g_date_time_get_utc_offset")]
     pub fn get_utc_offset(&self) -> TimeSpan {
         unsafe { ffi::g_date_time_get_utc_offset(self.to_glib_none().0) }
     }
 
+    #[doc(alias = "g_date_time_get_week_numbering_year")]
     pub fn get_week_numbering_year(&self) -> i32 {
         unsafe { ffi::g_date_time_get_week_numbering_year(self.to_glib_none().0) }
     }
 
+    #[doc(alias = "g_date_time_get_week_of_year")]
     pub fn get_week_of_year(&self) -> i32 {
         unsafe { ffi::g_date_time_get_week_of_year(self.to_glib_none().0) }
     }
 
+    #[doc(alias = "g_date_time_get_year")]
     pub fn get_year(&self) -> i32 {
         unsafe { ffi::g_date_time_get_year(self.to_glib_none().0) }
     }
 
+    #[doc(alias = "g_date_time_get_ymd")]
     pub fn get_ymd(&self) -> (i32, i32, i32) {
         unsafe {
             let mut year = mem::MaybeUninit::uninit();
@@ -326,10 +365,12 @@ impl DateTime {
         }
     }
 
+    #[doc(alias = "g_date_time_is_daylight_savings")]
     pub fn is_daylight_savings(&self) -> bool {
         unsafe { from_glib(ffi::g_date_time_is_daylight_savings(self.to_glib_none().0)) }
     }
 
+    #[doc(alias = "g_date_time_to_local")]
     pub fn to_local(&self) -> Result<DateTime, BoolError> {
         unsafe {
             Option::<_>::from_glib_full(ffi::g_date_time_to_local(self.to_glib_none().0))
@@ -338,10 +379,12 @@ impl DateTime {
     }
 
     //#[cfg_attr(feature = "v2_62", deprecated)]
+    //#[doc(alias = "g_date_time_to_timeval")]
     //pub fn to_timeval(&self, tv: /*Ignored*/&mut TimeVal) -> bool {
     //    unsafe { TODO: call ffi:g_date_time_to_timeval() }
     //}
 
+    #[doc(alias = "g_date_time_to_timezone")]
     pub fn to_timezone(&self, tz: &TimeZone) -> Result<DateTime, BoolError> {
         unsafe {
             Option::<_>::from_glib_full(ffi::g_date_time_to_timezone(
@@ -352,10 +395,12 @@ impl DateTime {
         }
     }
 
+    #[doc(alias = "g_date_time_to_unix")]
     pub fn to_unix(&self) -> i64 {
         unsafe { ffi::g_date_time_to_unix(self.to_glib_none().0) }
     }
 
+    #[doc(alias = "g_date_time_to_utc")]
     pub fn to_utc(&self) -> Result<DateTime, BoolError> {
         unsafe {
             Option::<_>::from_glib_full(ffi::g_date_time_to_utc(self.to_glib_none().0))
@@ -363,6 +408,7 @@ impl DateTime {
         }
     }
 
+    #[doc(alias = "g_date_time_compare")]
     fn compare(&self, dt2: &DateTime) -> i32 {
         unsafe {
             ffi::g_date_time_compare(
@@ -372,6 +418,7 @@ impl DateTime {
         }
     }
 
+    #[doc(alias = "g_date_time_equal")]
     fn equal(&self, dt2: &DateTime) -> bool {
         unsafe {
             from_glib(ffi::g_date_time_equal(
@@ -381,6 +428,7 @@ impl DateTime {
         }
     }
 
+    #[doc(alias = "g_date_time_hash")]
     fn hash(&self) -> u32 {
         unsafe {
             ffi::g_date_time_hash(
