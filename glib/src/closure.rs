@@ -9,7 +9,6 @@ use std::slice;
 use libc::{c_uint, c_void};
 
 use crate::translate::{from_glib_none, mut_override, ToGlibPtr, ToGlibPtrMut, Uninitialized};
-use crate::types::Type;
 use crate::ToValue;
 use crate::Value;
 
@@ -97,10 +96,10 @@ impl Closure {
             .map(ToValue::to_value)
             .collect::<smallvec::SmallVec<[_; 10]>>();
 
-        self.invoke_generic(&values)
+        self.invoke_with_values(&values)
     }
 
-    pub fn invoke_generic(&self, values: &[Value]) -> Option<Value> {
+    pub fn invoke_with_values(&self, values: &[Value]) -> Option<Value> {
         let result = unsafe {
             let mut result = Value::uninitialized();
             gobject_ffi::g_closure_invoke(
@@ -114,11 +113,7 @@ impl Closure {
             result
         };
 
-        if result.type_() == Type::Invalid {
-            None
-        } else {
-            Some(result)
-        }
+        Some(result).filter(|r| r.type_().is_valid())
     }
 }
 
@@ -133,6 +128,7 @@ mod tests {
     use super::Closure;
     use crate::{ToValue, Value};
 
+    #[allow(clippy::unnecessary_wraps)]
     fn closure_fn(values: &[Value]) -> Option<Value> {
         assert_eq!(values.len(), 2);
         let string_arg = values[0].get::<String>();

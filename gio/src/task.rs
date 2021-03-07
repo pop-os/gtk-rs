@@ -81,7 +81,7 @@ impl Task {
             let value = from_glib_full(value as *mut glib::gobject_ffi::GValue);
             match value {
                 Some(value) => Ok(value),
-                None => Ok(glib::Value::from_type(glib::types::Type::Unit)),
+                None => Ok(glib::Value::from_type(glib::types::Type::UNIT)),
             }
         }
     }
@@ -119,20 +119,16 @@ mod test {
 
     #[test]
     fn test_object_async_result() {
-        use glib::subclass;
         use glib::subclass::prelude::*;
         pub struct MySimpleObjectPrivate {
             pub size: std::cell::RefCell<Option<i64>>,
         }
 
+        #[glib::object_subclass]
         impl ObjectSubclass for MySimpleObjectPrivate {
             const NAME: &'static str = "MySimpleObjectPrivate";
             type ParentType = glib::Object;
-            type Instance = subclass::simple::InstanceStruct<Self>;
-            type Interfaces = ();
-            type Class = subclass::simple::ClassStruct<Self>;
             type Type = MySimpleObject;
-            glib::object_subclass!();
 
             fn new() -> Self {
                 Self {

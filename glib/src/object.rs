@@ -2,9 +2,9 @@
 
 //! `IMPL` Object wrapper implementation and `Object` binding.
 
-use crate::quark::Quark;
 use crate::translate::*;
 use crate::types::StaticType;
+use crate::{quark::Quark, subclass::signal::SignalQuery};
 use std::cmp;
 use std::fmt;
 use std::hash;
@@ -14,7 +14,7 @@ use std::ops;
 use std::pin::Pin;
 use std::ptr;
 
-use crate::subclass::prelude::ObjectSubclass;
+use crate::subclass::{prelude::ObjectSubclass, SignalId};
 use crate::value::ToValue;
 use crate::BoolError;
 use crate::Closure;
@@ -1105,7 +1105,7 @@ impl Object {
         unsafe { Object::new_internal(type_, &params) }
     }
 
-    pub fn new_generic(type_: Type, properties: &[(&str, Value)]) -> Result<Object, BoolError> {
+    pub fn with_values(type_: Type, properties: &[(&str, Value)]) -> Result<Object, BoolError> {
         use std::ffi::CString;
 
         let klass = ObjectClass::from_type(type_)
@@ -1135,7 +1135,7 @@ impl Object {
         type_: Type,
         params: &[(std::ffi::CString, Value)],
     ) -> Result<Object, BoolError> {
-        if !type_.is_a(&Object::static_type()) {
+        if !type_.is_a(Object::static_type()) {
             return Err(bool_error!(
                 "Can't instantiate non-GObject type '{}'",
                 type_
@@ -1169,7 +1169,7 @@ impl Object {
         );
         if ptr.is_null() {
             Err(bool_error!("Can't instantiate object for type '{}'", type_))
-        } else if type_.is_a(&InitiallyUnowned::static_type()) {
+        } else if type_.is_a(InitiallyUnowned::static_type()) {
             // Attention: This takes ownership of the floating reference
             Ok(from_glib_none(ptr))
         } else {
@@ -1190,13 +1190,14 @@ pub trait ObjectExt: ObjectType {
         property_name: N,
         value: &V,
     ) -> Result<(), BoolError>;
-    fn set_property_generic<'a, N: Into<&'a str>>(
+    fn set_property_from_value<'a, N: Into<&'a str>>(
         &self,
         property_name: N,
         value: &Value,
     ) -> Result<(), BoolError>;
     fn set_properties(&self, property_values: &[(&str, &dyn ToValue)]) -> Result<(), BoolError>;
-    fn set_properties_generic(&self, property_values: &[(&str, Value)]) -> Result<(), BoolError>;
+    fn set_properties_from_value(&self, property_values: &[(&str, Value)])
+        -> Result<(), BoolError>;
     fn get_property<'a, N: Into<&'a str>>(&self, property_name: N) -> Result<Value, BoolError>;
     fn has_property<'a, N: Into<&'a str>>(&self, property_name: N, type_: Option<Type>) -> bool;
     fn get_property_type<'a, N: Into<&'a str>>(&self, property_name: N) -> Option<Type>;
@@ -1264,14 +1265,38 @@ pub trait ObjectExt: ObjectType {
     where
         N: Into<&'a str>,
         F: Fn(&[Value]) -> Option<Value>;
-    fn emit<'a, N: Into<&'a str>>(
+    /// Emit signal by signal id.
+    fn emit(&self, signal_id: SignalId, args: &[&dyn ToValue]) -> Result<Option<Value>, BoolError>;
+    /// Same as `emit` but takes `Value` for the arguments.
+    fn emit_with_values(
+        &self,
+        signal_id: SignalId,
+        args: &[Value],
+    ) -> Result<Option<Value>, BoolError>;
+    /// Emit signal by it's name.
+    fn emit_by_name<'a, N: Into<&'a str>>(
         &self,
         signal_name: N,
         args: &[&dyn ToValue],
     ) -> Result<Option<Value>, BoolError>;
-    fn emit_generic<'a, N: Into<&'a str>>(
+    /// Same as `emit_by_name` but takes `Value` for the arguments.
+    fn emit_by_name_with_values<'a, N: Into<&'a str>>(
         &self,
         signal_name: N,
+        args: &[Value],
+    ) -> Result<Option<Value>, BoolError>;
+    /// Emit signal with details by signal id.
+    fn emit_with_details(
+        &self,
+        signal_id: SignalId,
+        details: Quark,
+        args: &[&dyn ToValue],
+    ) -> Result<Option<Value>, BoolError>;
+    /// Same as `emit_with_details` but takes `Value` for the arguments.
+    fn emit_with_details_and_values(
+        &self,
+        signal_id: SignalId,
+        details: Quark,
         args: &[Value],
     ) -> Result<Option<Value>, BoolError>;
     fn disconnect(&self, handler_id: SignalHandlerId);
@@ -1308,7 +1333,7 @@ pub trait ObjectExt: ObjectType {
 
 impl<T: ObjectType> ObjectExt for T {
     fn is<U: StaticType>(&self) -> bool {
-        self.get_type().is_a(&U::static_type())
+        self.get_type().is_a(U::static_type())
     }
 
     fn get_type(&self) -> Type {
@@ -1322,7 +1347,6 @@ impl<T: ObjectType> ObjectExt for T {
             &*klass
         }
     }
-
     fn set_properties(&self, property_values: &[(&str, &dyn ToValue)]) -> Result<(), BoolError> {
         use std::ffi::CString;
 
@@ -1361,7 +1385,10 @@ impl<T: ObjectType> ObjectExt for T {
         Ok(())
     }
 
-    fn set_properties_generic(&self, property_values: &[(&str, Value)]) -> Result<(), BoolError> {
+    fn set_properties_from_value(
+        &self,
+        property_values: &[(&str, Value)],
+    ) -> Result<(), BoolError> {
         use std::ffi::CString;
 
         let pspecs = self.list_properties();
@@ -1430,7 +1457,7 @@ impl<T: ObjectType> ObjectExt for T {
         Ok(())
     }
 
-    fn set_property_generic<'a, N: Into<&'a str>>(
+    fn set_property_from_value<'a, N: Into<&'a str>>(
         &self,
         property_name: N,
         value: &Value,
@@ -1492,15 +1519,13 @@ impl<T: ObjectType> ObjectExt for T {
             );
 
             // This can't really happen unless something goes wrong inside GObject
-            if value.type_() == crate::Type::Invalid {
-                Err(bool_error!(
+            Some(value).filter(|v| v.type_().is_valid()).ok_or_else(|| {
+                bool_error!(
                     "Failed to get property value for property '{}' of type '{}'",
                     property_name,
                     self.get_type()
-                ))
-            } else {
-                Ok(value)
-            }
+                )
+            })
         }
     }
 
@@ -1726,46 +1751,16 @@ impl<T: ObjectType> ObjectExt for T {
         F: Fn(&[Value]) -> Option<Value>,
     {
         let signal_name: &str = signal_name.into();
-
         let type_ = self.get_type();
 
-        let mut signal_id = 0;
-        let mut signal_detail = 0;
+        let (signal_id, signal_detail) = SignalId::parse_name(signal_name, type_, true)
+            .ok_or_else(|| bool_error!("Signal '{}' of type '{}' not found", signal_name, type_))?;
+        let signal_query = signal_id.query();
 
-        let found: bool = from_glib(gobject_ffi::g_signal_parse_name(
-            signal_name.to_glib_none().0,
-            type_.to_glib(),
-            &mut signal_id,
-            &mut signal_detail,
-            true.to_glib(),
-        ));
-
-        if !found {
-            return Err(bool_error!(
-                "Signal '{}' of type '{}' not found",
-                signal_name,
-                type_
-            ));
-        }
-
-        let mut details = mem::MaybeUninit::zeroed();
-        gobject_ffi::g_signal_query(signal_id, details.as_mut_ptr());
-        let details = details.assume_init();
-        if details.signal_id != signal_id {
-            return Err(bool_error!(
-                "Signal '{}' of type '{}' not found",
-                signal_name,
-                type_
-            ));
-        }
-
-        // This is actually G_SIGNAL_TYPE_STATIC_SCOPE
-        let return_type: Type =
-            from_glib(details.return_type & (!gobject_ffi::G_TYPE_FLAG_RESERVED_ID_BIT));
-        let closure = Closure::new_unsafe(move |values| {
-            let ret = callback(values);
-
-            if return_type == Type::Unit {
+        let return_type: Type = signal_query.return_type().into();
+        let closure = if return_type == Type::UNIT {
+            Closure::new_unsafe(move |values| {
+                let ret = callback(values);
                 if let Some(ret) = ret {
                     panic!(
                         "Signal '{}' of type '{}' required no return value but got value of type '{}'",
@@ -1775,66 +1770,60 @@ impl<T: ObjectType> ObjectExt for T {
                     );
                 }
                 None
-            } else {
-                match ret {
-                    Some(mut ret) => {
-                        let valid_type: bool = from_glib(gobject_ffi::g_type_check_value_holds(
-                            mut_override(ret.to_glib_none().0),
-                            return_type.to_glib(),
-                        ));
+            })
+        } else {
+            Closure::new_unsafe(move |values| {
+                let mut ret = callback(values).unwrap_or_else(|| {
+                    panic!(
+                        "Signal '{}' of type '{}' required return value of type '{}' but got None",
+                        signal_name,
+                        type_,
+                        return_type.name()
+                    );
+                });
+                let valid_type: bool = from_glib(gobject_ffi::g_type_check_value_holds(
+                    mut_override(ret.to_glib_none().0),
+                    return_type.to_glib(),
+                ));
 
-                        // If it's not directly a valid type but an object type, we check if the
-                        // actual typed of the contained object is compatible and if so create
-                        // a properly typed Value. This can happen if the type field in the
-                        // Value is set to a more generic type than the contained value
-                        if !valid_type && ret.type_().is_a(&Object::static_type()) {
-                            match ret.get::<Object>() {
-                                Ok(Some(obj)) => {
-                                    if obj.get_type().is_a(&return_type) {
-                                        ret.0.g_type = return_type.to_glib();
-                                    } else {
-                                        panic!(
-                                            "Signal '{}' of type '{}' required return value of type '{}' but got '{}' (actual '{}')",
-                                            signal_name,
-                                            type_,
-                                            return_type,
-                                            ret.type_(),
-                                            obj.get_type()
-                                        );
-                                    }
-                                }
-                                Ok(None) => {
-                                    // If the value is None then the type is compatible too
-                                    ret.0.g_type = return_type.to_glib();
-                                }
-                                Err(_) => unreachable!("ret type conformity already checked"),
-                            }
-                        } else if !valid_type {
-                            panic!(
-                                "Signal '{}' of type '{}' required return value of type '{}' but got '{}'",
-                                signal_name,
-                                type_,
-                                return_type,
-                                ret.type_()
-                            );
-                        }
-                        Some(ret)
-                    }
-                    None => {
-                        panic!(
-                            "Signal '{}' of type '{}' required return value of type '{}' but got None",
-                            signal_name,
-                            type_,
-                            return_type.name()
-                        );
-                    }
+                if valid_type {
+                    return Some(ret);
                 }
-            }
-        });
+
+                // If it's not directly a valid type but an object type, we check if the
+                // actual typed of the contained object is compatible and if so create
+                // a properly typed Value. This can happen if the type field in the
+                // Value is set to a more generic type than the contained value
+                let opt_obj = ret.get::<Object>().unwrap_or_else(|_| {
+                    panic!(
+                        "Signal '{}' of type '{}' required return value of type '{}' but got '{}'",
+                        signal_name,
+                        type_,
+                        return_type,
+                        ret.type_()
+                    );
+                });
+
+                let actual_type = opt_obj.map_or_else(|| ret.type_(), |obj| obj.get_type());
+                if !actual_type.is_a(return_type) {
+                    panic!(
+                        "Signal '{}' of type '{}' required return value of type '{}' but got '{}' (actual '{}')",
+                        signal_name,
+                        type_,
+                        return_type,
+                        ret.type_(),
+                        actual_type
+                    );
+                }
+
+                ret.0.g_type = return_type.to_glib();
+                Some(ret)
+            })
+        };
         let handler = gobject_ffi::g_signal_connect_closure_by_id(
             self.as_object_ref().to_glib_none().0,
-            signal_id,
-            signal_detail,
+            signal_id.to_glib(),
+            signal_detail.to_glib(),
             closure.to_glib_none().0,
             after.to_glib(),
         );
@@ -1850,12 +1839,8 @@ impl<T: ObjectType> ObjectExt for T {
         }
     }
 
-    fn emit<'a, N: Into<&'a str>>(
-        &self,
-        signal_name: N,
-        args: &[&dyn ToValue],
-    ) -> Result<Option<Value>, BoolError> {
-        let signal_name: &str = signal_name.into();
+    fn emit(&self, signal_id: SignalId, args: &[&dyn ToValue]) -> Result<Option<Value>, BoolError> {
+        let signal_query = signal_id.query();
         unsafe {
             let type_ = self.get_type();
 
@@ -1875,35 +1860,36 @@ impl<T: ObjectType> ObjectExt for T {
             )
             .collect::<smallvec::SmallVec<[_; 10]>>();
 
-            let (signal_id, signal_detail, return_type) =
-                validate_signal_arguments(type_, signal_name, &mut args[1..])?;
+            let signal_detail = validate_signal_arguments(type_, &signal_query, &mut args[1..])?;
 
             let mut return_value = Value::uninitialized();
-            if return_type != Type::Unit {
-                gobject_ffi::g_value_init(return_value.to_glib_none_mut().0, return_type.to_glib());
+            if signal_query.return_type() != Type::UNIT {
+                gobject_ffi::g_value_init(
+                    return_value.to_glib_none_mut().0,
+                    signal_query.return_type().to_glib(),
+                );
             }
 
             gobject_ffi::g_signal_emitv(
                 mut_override(args.as_ptr()) as *mut gobject_ffi::GValue,
-                signal_id,
-                signal_detail,
+                signal_id.to_glib(),
+                signal_detail.to_glib(),
                 return_value.to_glib_none_mut().0,
             );
 
-            if return_value.type_() != Type::Unit && return_value.type_() != Type::Invalid {
-                Ok(Some(return_value))
-            } else {
-                Ok(None)
-            }
+            Ok(Some(return_value).filter(|r| r.type_().is_valid() && r.type_() != Type::UNIT))
         }
     }
 
-    fn emit_generic<'a, N: Into<&'a str>>(
+    fn emit_with_details(
         &self,
-        signal_name: N,
-        args: &[Value],
+        signal_id: SignalId,
+        details: Quark,
+        args: &[&dyn ToValue],
     ) -> Result<Option<Value>, BoolError> {
-        let signal_name: &str = signal_name.into();
+        let signal_query = signal_id.query();
+        assert!(signal_query.flags().contains(crate::SignalFlags::DETAILED));
+
         unsafe {
             let type_ = self.get_type();
 
@@ -1917,30 +1903,43 @@ impl<T: ObjectType> ObjectExt for T {
                 v
             };
 
-            let mut args = Iterator::chain(std::iter::once(self_v), args.iter().cloned())
-                .collect::<smallvec::SmallVec<[_; 10]>>();
+            let mut args = Iterator::chain(
+                std::iter::once(self_v),
+                args.iter().copied().map(ToValue::to_value),
+            )
+            .collect::<smallvec::SmallVec<[_; 10]>>();
 
-            let (signal_id, signal_detail, return_type) =
-                validate_signal_arguments(type_, signal_name, &mut args[1..])?;
+            validate_signal_arguments(type_, &signal_query, &mut args)?;
 
             let mut return_value = Value::uninitialized();
-            if return_type != Type::Unit {
-                gobject_ffi::g_value_init(return_value.to_glib_none_mut().0, return_type.to_glib());
+            if signal_query.return_type() != Type::UNIT {
+                gobject_ffi::g_value_init(
+                    return_value.to_glib_none_mut().0,
+                    signal_query.return_type().to_glib(),
+                );
             }
 
             gobject_ffi::g_signal_emitv(
                 mut_override(args.as_ptr()) as *mut gobject_ffi::GValue,
-                signal_id,
-                signal_detail,
+                signal_id.to_glib(),
+                details.to_glib(),
                 return_value.to_glib_none_mut().0,
             );
 
-            if return_value.type_() != Type::Unit && return_value.type_() != Type::Invalid {
-                Ok(Some(return_value))
-            } else {
-                Ok(None)
-            }
+            Ok(Some(return_value).filter(|r| r.type_().is_valid() && r.type_() != Type::UNIT))
         }
+    }
+
+    fn emit_by_name<'a, N: Into<&'a str>>(
+        &self,
+        signal_name: N,
+        args: &[&dyn ToValue],
+    ) -> Result<Option<Value>, BoolError> {
+        let signal_name: &str = signal_name.into();
+        let type_ = self.get_type();
+        let signal_id = SignalId::lookup(signal_name, type_)
+            .ok_or_else(|| bool_error!("Signal '{}' of type '{}' not found", signal_name, type_))?;
+        self.emit(signal_id, args)
     }
 
     fn downgrade(&self) -> WeakRef<T> {
@@ -1971,6 +1970,108 @@ impl<T: ObjectType> ObjectExt for T {
         let ptr: *mut gobject_ffi::GObject = stash.0;
 
         unsafe { ffi::g_atomic_int_get(&(*ptr).ref_count as *const u32 as *const i32) as u32 }
+    }
+
+    fn emit_with_values(
+        &self,
+        signal_id: SignalId,
+        args: &[Value],
+    ) -> Result<Option<Value>, BoolError> {
+        unsafe {
+            let type_ = self.get_type();
+
+            let signal_query = signal_id.query();
+
+            let self_v = {
+                let mut v = Value::uninitialized();
+                gobject_ffi::g_value_init(v.to_glib_none_mut().0, self.get_type().to_glib());
+                gobject_ffi::g_value_set_object(
+                    v.to_glib_none_mut().0,
+                    self.as_object_ref().to_glib_none().0,
+                );
+                v
+            };
+
+            let mut args = Iterator::chain(std::iter::once(self_v), args.iter().cloned())
+                .collect::<smallvec::SmallVec<[_; 10]>>();
+
+            let signal_detail = validate_signal_arguments(type_, &signal_query, &mut args[1..])?;
+
+            let mut return_value = Value::uninitialized();
+            if signal_query.return_type() != Type::UNIT {
+                gobject_ffi::g_value_init(
+                    return_value.to_glib_none_mut().0,
+                    signal_query.return_type().to_glib(),
+                );
+            }
+
+            gobject_ffi::g_signal_emitv(
+                mut_override(args.as_ptr()) as *mut gobject_ffi::GValue,
+                signal_id.to_glib(),
+                signal_detail.to_glib(),
+                return_value.to_glib_none_mut().0,
+            );
+
+            Ok(Some(return_value).filter(|r| r.type_().is_valid() && r.type_() != Type::UNIT))
+        }
+    }
+
+    fn emit_by_name_with_values<'a, N: Into<&'a str>>(
+        &self,
+        signal_name: N,
+        args: &[Value],
+    ) -> Result<Option<Value>, BoolError> {
+        let signal_name: &str = signal_name.into();
+        let type_ = self.get_type();
+        let signal_id = SignalId::lookup(signal_name, type_)
+            .ok_or_else(|| bool_error!("Signal '{}' of type '{}' not found", signal_name, type_))?;
+        self.emit_with_values(signal_id, args)
+    }
+
+    fn emit_with_details_and_values(
+        &self,
+        signal_id: SignalId,
+        details: Quark,
+        args: &[Value],
+    ) -> Result<Option<Value>, BoolError> {
+        let signal_query = signal_id.query();
+        assert!(signal_query.flags().contains(crate::SignalFlags::DETAILED));
+
+        unsafe {
+            let type_ = self.get_type();
+
+            let self_v = {
+                let mut v = Value::uninitialized();
+                gobject_ffi::g_value_init(v.to_glib_none_mut().0, self.get_type().to_glib());
+                gobject_ffi::g_value_set_object(
+                    v.to_glib_none_mut().0,
+                    self.as_object_ref().to_glib_none().0,
+                );
+                v
+            };
+
+            let mut args = Iterator::chain(std::iter::once(self_v), args.iter().cloned())
+                .collect::<smallvec::SmallVec<[_; 10]>>();
+
+            validate_signal_arguments(type_, &signal_query, &mut args)?;
+
+            let mut return_value = Value::uninitialized();
+            if signal_query.return_type() != Type::UNIT {
+                gobject_ffi::g_value_init(
+                    return_value.to_glib_none_mut().0,
+                    signal_query.return_type().to_glib(),
+                );
+            }
+
+            gobject_ffi::g_signal_emitv(
+                mut_override(args.as_ptr()) as *mut gobject_ffi::GValue,
+                signal_id.to_glib(),
+                details.to_glib(),
+                return_value.to_glib_none_mut().0,
+            );
+
+            Ok(Some(return_value).filter(|r| r.type_().is_valid() && r.type_() != Type::UNIT))
+        }
     }
 }
 
@@ -2009,10 +2110,10 @@ fn validate_property_type(
         // actual type of the contained object is compatible and if so create
         // a properly typed Value. This can happen if the type field in the
         // Value is set to a more generic type than the contained value
-        if !valid_type && property_value.type_().is_a(&Object::static_type()) {
+        if !valid_type && property_value.type_().is_a(Object::static_type()) {
             match property_value.get::<Object>() {
                 Ok(Some(obj)) => {
-                    if obj.get_type().is_a(&pspec.get_value_type()) {
+                    if obj.get_type().is_a(pspec.get_value_type()) {
                         property_value.0.g_type = pspec.get_value_type().to_glib();
                     } else {
                         return Err(
@@ -2063,67 +2164,33 @@ fn validate_property_type(
 
 fn validate_signal_arguments(
     type_: Type,
-    signal_name: &str,
+    signal_query: &SignalQuery,
     args: &mut [Value],
-) -> Result<(u32, u32, Type), crate::BoolError> {
-    let mut signal_id = 0;
-    let mut signal_detail = 0;
+) -> Result<Quark, BoolError> {
+    let signal_name = signal_query.signal_name();
+    let (signal_id, signal_detail) = SignalId::parse_name(signal_name, type_, false)
+        .ok_or_else(|| bool_error!("Signal '{}' of type '{}' not found", signal_name, type_))?;
 
-    let found: bool = unsafe {
-        from_glib(gobject_ffi::g_signal_parse_name(
-            signal_name.to_glib_none().0,
-            type_.to_glib(),
-            &mut signal_id,
-            &mut signal_detail,
-            true.to_glib(),
-        ))
-    };
+    let signal_query = signal_id.query();
 
-    if !found {
-        return Err(bool_error!(
-            "Signal '{}' of type '{}' not found",
-            signal_name,
-            type_
-        ));
-    }
-
-    let details = unsafe {
-        let mut details = mem::MaybeUninit::zeroed();
-        gobject_ffi::g_signal_query(signal_id, details.as_mut_ptr());
-        details.assume_init()
-    };
-
-    if details.signal_id != signal_id {
-        return Err(bool_error!(
-            "Signal '{}' of type '{}' not found",
-            signal_name,
-            type_
-        ));
-    }
-
-    if details.n_params != args.len() as u32 {
+    if signal_query.n_params() != args.len() as u32 {
         return Err(bool_error!(
             "Incompatible number of arguments for signal '{}' of type '{}' (expected {}, got {})",
             signal_name,
             type_,
-            details.n_params,
+            signal_query.n_params(),
             args.len(),
         ));
     }
 
-    let param_types =
-        unsafe { std::slice::from_raw_parts(details.param_types, details.n_params as usize) };
+    let param_types = Iterator::zip(args.iter_mut(), signal_query.param_types());
 
-    for (i, (arg, param_type)) in Iterator::zip(
-        args.iter_mut(),
-        param_types.iter().copied().map(|x| unsafe { from_glib(x) }),
-    )
-    .enumerate()
-    {
-        if arg.type_().is_a(&Object::static_type()) {
+    for (i, (arg, param_type)) in param_types.enumerate() {
+        let param_type: Type = param_type.into();
+        if arg.type_().is_a(Object::static_type()) {
             match arg.get::<Object>() {
                 Ok(Some(obj)) => {
-                    if obj.get_type().is_a(&param_type) {
+                    if obj.get_type().is_a(param_type) {
                         arg.0.g_type = param_type.to_glib();
                     } else {
                         return Err(
@@ -2158,9 +2225,7 @@ fn validate_signal_arguments(
         }
     }
 
-    Ok((signal_id, signal_detail, unsafe {
-        from_glib(details.return_type)
-    }))
+    Ok(signal_detail)
 }
 
 impl ObjectClass {
@@ -2489,7 +2554,7 @@ impl<T: ObjectType> Class<T> {
     where
         U: IsA<T>,
     {
-        if !self.get_type().is_a(&U::static_type()) {
+        if !self.get_type().is_a(U::static_type()) {
             return None;
         }
 
@@ -2505,7 +2570,7 @@ impl<T: ObjectType> Class<T> {
     where
         U: IsA<T>,
     {
-        if !self.get_type().is_a(&U::static_type()) {
+        if !self.get_type().is_a(U::static_type()) {
             return None;
         }
 
@@ -2519,7 +2584,7 @@ impl<T: ObjectType> Class<T> {
     ///
     /// This will return `None` if `type_` is not a subclass of `Self`.
     pub fn from_type(type_: Type) -> Option<ClassRef<T>> {
-        if !type_.is_a(&T::static_type()) {
+        if !type_.is_a(T::static_type()) {
             return None;
         }
 

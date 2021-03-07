@@ -13,7 +13,7 @@ struct Data {
 }
 
 fn create_list_model() -> gtk::ListStore {
-    let col_types: [glib::Type; 1] = [glib::Type::String];
+    let col_types: [glib::Type; 1] = [glib::Type::STRING];
 
     let data: [Data; 4] = [
         Data {
@@ -30,10 +30,9 @@ fn create_list_model() -> gtk::ListStore {
         },
     ];
     let store = gtk::ListStore::new(&col_types);
-    let col_indices: [u32; 1] = [0];
     for d in data.iter() {
-        let values: [&dyn ToValue; 1] = [&d.description];
-        store.set(&store.append(), &col_indices, &values);
+        let values: [(u32, &dyn ToValue); 1] = [(0, &d.description)];
+        store.set(&store.append(), &values);
     }
     store
 }

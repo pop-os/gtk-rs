@@ -8,6 +8,9 @@ use crate::{Closure, Object, StaticType, Type, Value};
 use std::marker;
 use std::mem;
 use std::ptr;
+use std::{any::Any, collections::HashMap};
+
+use super::SignalId;
 
 /// A newly registered `glib::Type` that is currently still being initialized.
 ///
@@ -211,7 +214,7 @@ pub struct TypeData {
     #[doc(hidden)]
     pub parent_class: ffi::gpointer,
     #[doc(hidden)]
-    pub interface_data: *const Vec<(ffi::GType, ffi::gpointer)>,
+    pub class_data: Option<ptr::NonNull<HashMap<Type, Box<dyn Any + Send + Sync>>>>,
     #[doc(hidden)]
     pub private_offset: isize,
 }
@@ -233,22 +236,55 @@ impl TypeData {
         self.parent_class
     }
 
-    /// Returns a pointer to the interface implementation specific data.
+    /// Returns a pointer to the class implementation specific data.
     ///
-    /// This is used for interface implementations to store additional data.
-    pub fn get_interface_data(&self, type_: ffi::GType) -> ffi::gpointer {
+    /// This is used for class implementations to store additional data.
+    pub fn get_class_data<T: Any + Send + Sync + 'static>(&self, type_: Type) -> Option<&T> {
         unsafe {
-            if self.interface_data.is_null() {
-                return ptr::null_mut();
+            match self.class_data {
+                None => None,
+                Some(ref data) => data.as_ref().get(&type_).and_then(|ptr| ptr.downcast_ref()),
+            }
+        }
+    }
+
+    /// Gets a mutable reference of the class implementation specific data.
+    ///
+    /// # Safety
+    ///
+    /// This can only be used while the type is being initialized.
+    pub unsafe fn get_class_data_mut<T: Any + Send + Sync + 'static>(
+        &mut self,
+        type_: Type,
+    ) -> Option<&mut T> {
+        match self.class_data {
+            None => None,
+            Some(ref mut data) => data.as_mut().get_mut(&type_).and_then(|v| v.downcast_mut()),
+        }
+    }
+
+    /// Sets class specific implementation data.
+    ///
+    /// # Safety
+    ///
+    /// This can only be used while the type is being initialized.
+    ///
+    /// # Panics
+    ///
+    /// If the class_data already contains a data for the specified `type_`.
+    pub unsafe fn set_class_data<T: Any + Send + Sync + 'static>(&mut self, type_: Type, data: T) {
+        if self.class_data.is_none() {
+            self.class_data = Some(ptr::NonNull::new_unchecked(Box::into_raw(Box::new(
+                HashMap::new(),
+            ))));
+        }
+
+        if let Some(ref mut class_data) = self.class_data {
+            if class_data.as_ref().get(&type_).is_some() {
+                panic!("The class_data already contains a key for {}", type_);
             }
 
-            for &(t, p) in &(*self.interface_data) {
-                if t == type_ {
-                    return p;
-                }
-            }
-
-            ptr::null_mut()
+            class_data.as_mut().insert(type_, Box::new(data));
         }
     }
 
@@ -260,16 +296,14 @@ impl TypeData {
 }
 
 #[macro_export]
-/// Macro for boilerplate of [`ObjectSubclass`] implementations.
-///
-/// [`ObjectSubclass`]: subclass/types/trait.ObjectSubclass.html
-macro_rules! object_subclass {
+#[doc(hidden)]
+macro_rules! object_subclass_internal {
     () => {
         fn type_data() -> std::ptr::NonNull<$crate::subclass::TypeData> {
             static mut DATA: $crate::subclass::TypeData = $crate::subclass::TypeData {
-                type_: $crate::Type::Invalid,
+                type_: $crate::Type::INVALID,
                 parent_class: std::ptr::null_mut(),
-                interface_data: std::ptr::null_mut(),
+                class_data: None,
                 private_offset: 0,
             };
 
@@ -286,7 +320,7 @@ macro_rules! object_subclass {
             unsafe {
                 let data = Self::type_data();
                 let type_ = data.as_ref().get_type();
-                assert_ne!(type_, $crate::Type::Invalid);
+                assert!(type_.is_valid());
 
                 type_
             }
@@ -376,7 +410,7 @@ pub trait ObjectSubclass: Sized + 'static {
         unsafe {
             let data = Self::type_data();
             let type_ = data.as_ref().get_type();
-            assert_ne!(type_, Type::Invalid);
+            assert!(type_.is_valid());
 
             let offset = -data.as_ref().private_offset;
 
@@ -631,20 +665,15 @@ pub(crate) unsafe fn signal_override_class_handler<F>(
         class_handler(&super::SignalClassHandlerToken(instance as *mut _), values)
     });
 
-    let mut signal_id = 0;
-    let found: bool = from_glib(gobject_ffi::g_signal_parse_name(
-        name.to_glib_none().0,
-        type_,
-        &mut signal_id,
-        ptr::null_mut(),
-        false.to_glib(),
-    ));
-
-    if !found {
+    if let Some((signal_id, _)) = SignalId::parse_name(name, from_glib(type_), false) {
+        gobject_ffi::g_signal_override_class_closure(
+            signal_id.to_glib(),
+            type_,
+            class_handler.to_glib_none().0,
+        );
+    } else {
         panic!("Signal '{}' not found", name);
     }
-
-    gobject_ffi::g_signal_override_class_closure(signal_id, type_, class_handler.to_glib_none().0);
 }
 
 pub(crate) unsafe fn signal_chain_from_overridden(
@@ -658,9 +687,5 @@ pub(crate) unsafe fn signal_chain_from_overridden(
         values.as_ptr() as *mut Value as *mut gobject_ffi::GValue,
         result.to_glib_none_mut().0,
     );
-    if result.type_() != Type::Unit && result.type_() != Type::Invalid {
-        Some(result)
-    } else {
-        None
-    }
+    Some(result).filter(|r| r.type_().is_valid() && r.type_() != Type::UNIT)
 }

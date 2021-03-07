@@ -850,6 +850,7 @@ pub trait WidgetExt: 'static {
 
     fn connect_child_notify<F: Fn(&Self, &glib::ParamSpec) + 'static>(
         &self,
+        detail: Option<&str>,
         f: F,
     ) -> SignalHandlerId;
 
@@ -3261,6 +3262,7 @@ impl<O: IsA<Widget>> WidgetExt for O {
 
     fn connect_child_notify<F: Fn(&Self, &glib::ParamSpec) + 'static>(
         &self,
+        detail: Option<&str>,
         f: F,
     ) -> SignalHandlerId {
         unsafe extern "C" fn child_notify_trampoline<P, F: Fn(&P, &glib::ParamSpec) + 'static>(
@@ -3278,9 +3280,13 @@ impl<O: IsA<Widget>> WidgetExt for O {
         }
         unsafe {
             let f: Box_<F> = Box_::new(f);
+            let detailed_signal_name = detail.map(|name| format!("child-notify::{}\0", name));
+            let signal_name: &[u8] = detailed_signal_name
+                .as_ref()
+                .map_or(&b"child-notify\0"[..], |n| n.as_bytes());
             connect_raw(
                 self.as_ptr() as *mut _,
-                b"child-notify\0".as_ptr() as *const _,
+                signal_name.as_ptr() as *const _,
                 Some(transmute::<_, unsafe extern "C" fn()>(
                     child_notify_trampoline::<Self, F> as *const (),
                 )),
@@ -3315,7 +3321,7 @@ impl<O: IsA<Widget>> WidgetExt for O {
     fn emit_composited_changed(&self) {
         let _ = unsafe {
             glib::Object::from_glib_borrow(self.as_ptr() as *mut glib::gobject_ffi::GObject)
-                .emit("composited-changed", &[])
+                .emit_by_name("composited-changed", &[])
                 .unwrap()
         };
     }
@@ -4150,7 +4156,7 @@ impl<O: IsA<Widget>> WidgetExt for O {
     fn emit_grab_focus(&self) {
         let _ = unsafe {
             glib::Object::from_glib_borrow(self.as_ptr() as *mut glib::gobject_ffi::GObject)
-                .emit("grab-focus", &[])
+                .emit_by_name("grab-focus", &[])
                 .unwrap()
         };
     }
@@ -4506,7 +4512,7 @@ impl<O: IsA<Widget>> WidgetExt for O {
     fn emit_move_focus(&self, direction: DirectionType) {
         let _ = unsafe {
             glib::Object::from_glib_borrow(self.as_ptr() as *mut glib::gobject_ffi::GObject)
-                .emit("move-focus", &[&direction])
+                .emit_by_name("move-focus", &[&direction])
                 .unwrap()
         };
     }
@@ -4567,7 +4573,7 @@ impl<O: IsA<Widget>> WidgetExt for O {
     fn emit_popup_menu(&self) -> bool {
         let res = unsafe {
             glib::Object::from_glib_borrow(self.as_ptr() as *mut glib::gobject_ffi::GObject)
-                .emit("popup-menu", &[])
+                .emit_by_name("popup-menu", &[])
                 .unwrap()
         };
         res.unwrap()
@@ -5062,7 +5068,7 @@ impl<O: IsA<Widget>> WidgetExt for O {
     fn emit_show_help(&self, help_type: WidgetHelpType) -> bool {
         let res = unsafe {
             glib::Object::from_glib_borrow(self.as_ptr() as *mut glib::gobject_ffi::GObject)
-                .emit("show-help", &[&help_type])
+                .emit_by_name("show-help", &[&help_type])
                 .unwrap()
         };
         res.unwrap()
