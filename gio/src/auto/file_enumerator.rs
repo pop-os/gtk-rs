@@ -24,8 +24,10 @@ glib::wrapper! {
 pub const NONE_FILE_ENUMERATOR: Option<&FileEnumerator> = None;
 
 pub trait FileEnumeratorExt: 'static {
+    #[doc(alias = "g_file_enumerator_close")]
     fn close<P: IsA<Cancellable>>(&self, cancellable: Option<&P>) -> Result<(), glib::Error>;
 
+    #[doc(alias = "g_file_enumerator_close_async")]
     fn close_async<P: IsA<Cancellable>, Q: FnOnce(Result<(), glib::Error>) + Send + 'static>(
         &self,
         io_priority: glib::Priority,
@@ -38,19 +40,25 @@ pub trait FileEnumeratorExt: 'static {
         io_priority: glib::Priority,
     ) -> Pin<Box_<dyn std::future::Future<Output = Result<(), glib::Error>> + 'static>>;
 
+    #[doc(alias = "g_file_enumerator_get_child")]
     fn get_child(&self, info: &FileInfo) -> Option<File>;
 
+    #[doc(alias = "g_file_enumerator_get_container")]
     fn get_container(&self) -> Option<File>;
 
+    #[doc(alias = "g_file_enumerator_has_pending")]
     fn has_pending(&self) -> bool;
 
+    #[doc(alias = "g_file_enumerator_is_closed")]
     fn is_closed(&self) -> bool;
 
+    #[doc(alias = "g_file_enumerator_next_file")]
     fn next_file<P: IsA<Cancellable>>(
         &self,
         cancellable: Option<&P>,
     ) -> Result<Option<FileInfo>, glib::Error>;
 
+    #[doc(alias = "g_file_enumerator_next_files_async")]
     fn next_files_async<
         P: IsA<Cancellable>,
         Q: FnOnce(Result<Vec<FileInfo>, glib::Error>) + Send + 'static,
@@ -68,6 +76,7 @@ pub trait FileEnumeratorExt: 'static {
         io_priority: glib::Priority,
     ) -> Pin<Box_<dyn std::future::Future<Output = Result<Vec<FileInfo>, glib::Error>> + 'static>>;
 
+    #[doc(alias = "g_file_enumerator_set_pending")]
     fn set_pending(&self, pending: bool);
 }
 
