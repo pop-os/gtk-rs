@@ -31,7 +31,6 @@ glib::wrapper! {
 impl StackSidebar {
     #[cfg(any(feature = "v3_16", feature = "dox"))]
     #[cfg_attr(feature = "dox", doc(cfg(feature = "v3_16")))]
-    #[doc(alias = "gtk_stack_sidebar_new")]
     pub fn new() -> StackSidebar {
         assert_initialized_main_thread!();
         unsafe { Widget::from_glib_none(ffi::gtk_stack_sidebar_new()).unsafe_cast() }
@@ -396,12 +395,10 @@ pub const NONE_STACK_SIDEBAR: Option<&StackSidebar> = None;
 pub trait StackSidebarExt: 'static {
     #[cfg(any(feature = "v3_16", feature = "dox"))]
     #[cfg_attr(feature = "dox", doc(cfg(feature = "v3_16")))]
-    #[doc(alias = "gtk_stack_sidebar_get_stack")]
     fn get_stack(&self) -> Option<Stack>;
 
     #[cfg(any(feature = "v3_16", feature = "dox"))]
     #[cfg_attr(feature = "dox", doc(cfg(feature = "v3_16")))]
-    #[doc(alias = "gtk_stack_sidebar_set_stack")]
     fn set_stack<P: IsA<Stack>>(&self, stack: &P);
 
     fn get_property_stack(&self) -> Option<Stack>;

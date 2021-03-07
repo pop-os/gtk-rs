@@ -8,7 +8,6 @@ use glib::Value;
 use std::ptr;
 
 impl RadioToolButton {
-    #[doc(alias = "gtk_radio_tool_button_new")]
     pub fn new() -> RadioToolButton {
         assert_initialized_main_thread!();
         unsafe {
@@ -16,7 +15,6 @@ impl RadioToolButton {
         }
     }
 
-    #[doc(alias = "gtk_radio_tool_button_new_from_stock")]
     pub fn from_stock(stock_id: &str) -> RadioToolButton {
         assert_initialized_main_thread!();
         unsafe {

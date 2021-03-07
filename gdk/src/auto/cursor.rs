@@ -18,13 +18,11 @@ glib::wrapper! {
 
 impl Cursor {
     #[cfg_attr(feature = "v3_16", deprecated)]
-    #[doc(alias = "gdk_cursor_new")]
     pub fn new(cursor_type: CursorType) -> Cursor {
         assert_initialized_main_thread!();
         unsafe { from_glib_full(ffi::gdk_cursor_new(cursor_type.to_glib())) }
     }
 
-    #[doc(alias = "gdk_cursor_new_for_display")]
     pub fn new_for_display(display: &Display, cursor_type: CursorType) -> Cursor {
         skip_assert_initialized!();
         unsafe {
@@ -35,7 +33,6 @@ impl Cursor {
         }
     }
 
-    #[doc(alias = "gdk_cursor_new_from_name")]
     pub fn from_name(display: &Display, name: &str) -> Option<Cursor> {
         skip_assert_initialized!();
         unsafe {
@@ -46,7 +43,6 @@ impl Cursor {
         }
     }
 
-    #[doc(alias = "gdk_cursor_new_from_pixbuf")]
     pub fn from_pixbuf(display: &Display, pixbuf: &gdk_pixbuf::Pixbuf, x: i32, y: i32) -> Cursor {
         skip_assert_initialized!();
         unsafe {
@@ -59,7 +55,6 @@ impl Cursor {
         }
     }
 
-    #[doc(alias = "gdk_cursor_new_from_surface")]
     pub fn from_surface(display: &Display, surface: &cairo::Surface, x: f64, y: f64) -> Cursor {
         skip_assert_initialized!();
         unsafe {
@@ -72,22 +67,18 @@ impl Cursor {
         }
     }
 
-    #[doc(alias = "gdk_cursor_get_cursor_type")]
     pub fn get_cursor_type(&self) -> CursorType {
         unsafe { from_glib(ffi::gdk_cursor_get_cursor_type(self.to_glib_none().0)) }
     }
 
-    #[doc(alias = "gdk_cursor_get_display")]
     pub fn get_display(&self) -> Display {
         unsafe { from_glib_none(ffi::gdk_cursor_get_display(self.to_glib_none().0)) }
     }
 
-    #[doc(alias = "gdk_cursor_get_image")]
     pub fn get_image(&self) -> Option<gdk_pixbuf::Pixbuf> {
         unsafe { from_glib_full(ffi::gdk_cursor_get_image(self.to_glib_none().0)) }
     }
 
-    #[doc(alias = "gdk_cursor_get_surface")]
     pub fn get_surface(&self) -> (Option<cairo::Surface>, f64, f64) {
         unsafe {
             let mut x_hot = mem::MaybeUninit::uninit();

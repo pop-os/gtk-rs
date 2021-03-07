@@ -6,7 +6,6 @@ use glib::translate::*;
 use std::mem;
 
 impl AttrList {
-    #[doc(alias = "pango_attr_list_change")]
     pub fn change(&self, attr: Attribute) {
         unsafe {
             ffi::pango_attr_list_change(self.to_glib_none().0, attr.to_glib_none().0 as *mut _);
@@ -16,7 +15,6 @@ impl AttrList {
 
     #[cfg(any(feature = "v1_46", feature = "dox"))]
     #[cfg_attr(feature = "dox", doc(cfg(feature = "v1_46")))]
-    #[doc(alias = "pango_attr_list_equal")]
     fn equal(&self, other_list: &AttrList) -> bool {
         unsafe {
             from_glib(ffi::pango_attr_list_equal(
@@ -26,7 +24,6 @@ impl AttrList {
         }
     }
 
-    #[doc(alias = "pango_attr_list_insert")]
     pub fn insert(&self, attr: Attribute) {
         unsafe {
             ffi::pango_attr_list_insert(self.to_glib_none().0, attr.to_glib_none().0 as *mut _);
@@ -34,7 +31,6 @@ impl AttrList {
         }
     }
 
-    #[doc(alias = "pango_attr_list_insert_before")]
     pub fn insert_before(&self, attr: Attribute) {
         unsafe {
             ffi::pango_attr_list_insert_before(

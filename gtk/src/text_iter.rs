@@ -6,7 +6,6 @@ use glib::translate::*;
 use std::convert::TryFrom;
 
 impl TextIter {
-    #[doc(alias = "gtk_text_iter_get_attributes")]
     pub fn get_attributes(&self, values: &TextAttributes) -> bool {
         unsafe {
             from_glib(ffi::gtk_text_iter_get_attributes(
@@ -16,7 +15,6 @@ impl TextIter {
         }
     }
 
-    #[doc(alias = "gtk_text_iter_get_char")]
     pub fn get_char(&self) -> Option<char> {
         let ret = unsafe { ffi::gtk_text_iter_get_char(self.to_glib_none().0) };
 

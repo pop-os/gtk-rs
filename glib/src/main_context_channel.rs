@@ -46,7 +46,6 @@ impl<T> ChannelInner<T> {
         }
     }
 
-    #[doc(alias = "g_source_set_ready_time")]
     fn set_ready_time(&mut self, ready_time: i64) {
         if let ChannelSourceState::Attached(source) = self.source {
             unsafe {

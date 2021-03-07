@@ -20,12 +20,10 @@ glib::wrapper! {
 }
 
 impl SubprocessLauncher {
-    #[doc(alias = "g_subprocess_launcher_new")]
     pub fn new(flags: SubprocessFlags) -> SubprocessLauncher {
         unsafe { from_glib_full(ffi::g_subprocess_launcher_new(flags.to_glib())) }
     }
 
-    #[doc(alias = "g_subprocess_launcher_getenv")]
     pub fn getenv<P: AsRef<std::path::Path>>(&self, variable: P) -> Option<std::path::PathBuf> {
         unsafe {
             from_glib_none(ffi::g_subprocess_launcher_getenv(
@@ -37,7 +35,6 @@ impl SubprocessLauncher {
 
     #[cfg(any(unix, feature = "dox"))]
     #[cfg_attr(feature = "dox", doc(cfg(unix)))]
-    #[doc(alias = "g_subprocess_launcher_set_child_setup")]
     pub fn set_child_setup<P: Fn() + 'static>(&self, child_setup: P) {
         let child_setup_data: Box_<P> = Box_::new(child_setup);
         unsafe extern "C" fn child_setup_func<P: Fn() + 'static>(user_data: glib::ffi::gpointer) {
@@ -60,7 +57,6 @@ impl SubprocessLauncher {
         }
     }
 
-    #[doc(alias = "g_subprocess_launcher_set_cwd")]
     pub fn set_cwd<P: AsRef<std::path::Path>>(&self, cwd: P) {
         unsafe {
             ffi::g_subprocess_launcher_set_cwd(
@@ -70,14 +66,12 @@ impl SubprocessLauncher {
         }
     }
 
-    #[doc(alias = "g_subprocess_launcher_set_environ")]
     pub fn set_environ(&self, env: &[&std::path::Path]) {
         unsafe {
             ffi::g_subprocess_launcher_set_environ(self.to_glib_none().0, env.to_glib_none().0);
         }
     }
 
-    #[doc(alias = "g_subprocess_launcher_set_flags")]
     pub fn set_flags(&self, flags: SubprocessFlags) {
         unsafe {
             ffi::g_subprocess_launcher_set_flags(self.to_glib_none().0, flags.to_glib());
@@ -86,7 +80,6 @@ impl SubprocessLauncher {
 
     #[cfg(any(unix, feature = "dox"))]
     #[cfg_attr(feature = "dox", doc(cfg(unix)))]
-    #[doc(alias = "g_subprocess_launcher_set_stderr_file_path")]
     pub fn set_stderr_file_path<P: AsRef<std::path::Path>>(&self, path: P) {
         unsafe {
             ffi::g_subprocess_launcher_set_stderr_file_path(
@@ -98,7 +91,6 @@ impl SubprocessLauncher {
 
     #[cfg(any(unix, feature = "dox"))]
     #[cfg_attr(feature = "dox", doc(cfg(unix)))]
-    #[doc(alias = "g_subprocess_launcher_set_stdin_file_path")]
     pub fn set_stdin_file_path(&self, path: &str) {
         unsafe {
             ffi::g_subprocess_launcher_set_stdin_file_path(
@@ -110,7 +102,6 @@ impl SubprocessLauncher {
 
     #[cfg(any(unix, feature = "dox"))]
     #[cfg_attr(feature = "dox", doc(cfg(unix)))]
-    #[doc(alias = "g_subprocess_launcher_set_stdout_file_path")]
     pub fn set_stdout_file_path<P: AsRef<std::path::Path>>(&self, path: P) {
         unsafe {
             ffi::g_subprocess_launcher_set_stdout_file_path(
@@ -120,7 +111,6 @@ impl SubprocessLauncher {
         }
     }
 
-    #[doc(alias = "g_subprocess_launcher_setenv")]
     pub fn setenv<P: AsRef<std::ffi::OsStr>, Q: AsRef<std::ffi::OsStr>>(
         &self,
         variable: P,
@@ -137,12 +127,10 @@ impl SubprocessLauncher {
         }
     }
 
-    //#[doc(alias = "g_subprocess_launcher_spawn")]
     //pub fn spawn(&self, error: &mut glib::Error, argv0: &str, : /*Unknown conversion*//*Unimplemented*/Fundamental: VarArgs) -> Option<Subprocess> {
     //    unsafe { TODO: call ffi:g_subprocess_launcher_spawn() }
     //}
 
-    #[doc(alias = "g_subprocess_launcher_spawnv")]
     pub fn spawnv(&self, argv: &[&std::ffi::OsStr]) -> Result<Subprocess, glib::Error> {
         unsafe {
             let mut error = ptr::null_mut();
@@ -159,7 +147,6 @@ impl SubprocessLauncher {
         }
     }
 
-    #[doc(alias = "g_subprocess_launcher_unsetenv")]
     pub fn unsetenv<P: AsRef<std::ffi::OsStr>>(&self, variable: P) {
         unsafe {
             ffi::g_subprocess_launcher_unsetenv(

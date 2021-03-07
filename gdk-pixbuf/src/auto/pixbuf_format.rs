@@ -16,7 +16,6 @@ glib::wrapper! {
 }
 
 impl PixbufFormat {
-    #[doc(alias = "gdk_pixbuf_format_get_description")]
     pub fn get_description(&self) -> Option<glib::GString> {
         unsafe {
             from_glib_full(ffi::gdk_pixbuf_format_get_description(mut_override(
@@ -25,7 +24,6 @@ impl PixbufFormat {
         }
     }
 
-    #[doc(alias = "gdk_pixbuf_format_get_extensions")]
     pub fn get_extensions(&self) -> Vec<glib::GString> {
         unsafe {
             FromGlibPtrContainer::from_glib_full(ffi::gdk_pixbuf_format_get_extensions(
@@ -34,7 +32,6 @@ impl PixbufFormat {
         }
     }
 
-    #[doc(alias = "gdk_pixbuf_format_get_license")]
     pub fn get_license(&self) -> Option<glib::GString> {
         unsafe {
             from_glib_full(ffi::gdk_pixbuf_format_get_license(mut_override(
@@ -43,7 +40,6 @@ impl PixbufFormat {
         }
     }
 
-    #[doc(alias = "gdk_pixbuf_format_get_mime_types")]
     pub fn get_mime_types(&self) -> Vec<glib::GString> {
         unsafe {
             FromGlibPtrContainer::from_glib_full(ffi::gdk_pixbuf_format_get_mime_types(
@@ -52,7 +48,6 @@ impl PixbufFormat {
         }
     }
 
-    #[doc(alias = "gdk_pixbuf_format_get_name")]
     pub fn get_name(&self) -> Option<glib::GString> {
         unsafe {
             from_glib_full(ffi::gdk_pixbuf_format_get_name(mut_override(
@@ -61,7 +56,6 @@ impl PixbufFormat {
         }
     }
 
-    #[doc(alias = "gdk_pixbuf_format_is_disabled")]
     pub fn is_disabled(&self) -> bool {
         unsafe {
             from_glib(ffi::gdk_pixbuf_format_is_disabled(mut_override(
@@ -72,7 +66,6 @@ impl PixbufFormat {
 
     #[cfg(any(feature = "v2_36", feature = "dox"))]
     #[cfg_attr(feature = "dox", doc(cfg(feature = "v2_36")))]
-    #[doc(alias = "gdk_pixbuf_format_is_save_option_supported")]
     pub fn is_save_option_supported(&self, option_key: &str) -> bool {
         unsafe {
             from_glib(ffi::gdk_pixbuf_format_is_save_option_supported(
@@ -82,7 +75,6 @@ impl PixbufFormat {
         }
     }
 
-    #[doc(alias = "gdk_pixbuf_format_is_scalable")]
     pub fn is_scalable(&self) -> bool {
         unsafe {
             from_glib(ffi::gdk_pixbuf_format_is_scalable(mut_override(
@@ -91,7 +83,6 @@ impl PixbufFormat {
         }
     }
 
-    #[doc(alias = "gdk_pixbuf_format_is_writable")]
     pub fn is_writable(&self) -> bool {
         unsafe {
             from_glib(ffi::gdk_pixbuf_format_is_writable(mut_override(
@@ -100,7 +91,6 @@ impl PixbufFormat {
         }
     }
 
-    #[doc(alias = "gdk_pixbuf_format_set_disabled")]
     pub fn set_disabled(&mut self, disabled: bool) {
         unsafe {
             ffi::gdk_pixbuf_format_set_disabled(self.to_glib_none_mut().0, disabled.to_glib());

@@ -28,7 +28,6 @@ glib::wrapper! {
 }
 
 impl GestureLongPress {
-    #[doc(alias = "gtk_gesture_long_press_new")]
     pub fn new<P: IsA<Widget>>(widget: &P) -> GestureLongPress {
         skip_assert_initialized!();
         unsafe {

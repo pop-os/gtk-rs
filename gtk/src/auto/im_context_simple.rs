@@ -20,7 +20,6 @@ glib::wrapper! {
 }
 
 impl IMContextSimple {
-    #[doc(alias = "gtk_im_context_simple_new")]
     pub fn new() -> IMContextSimple {
         assert_initialized_main_thread!();
         unsafe { IMContext::from_glib_full(ffi::gtk_im_context_simple_new()).unsafe_cast() }

@@ -30,7 +30,6 @@ glib::wrapper! {
 impl PadController {
     #[cfg(any(feature = "v3_22", feature = "dox"))]
     #[cfg_attr(feature = "dox", doc(cfg(feature = "v3_22")))]
-    #[doc(alias = "gtk_pad_controller_new")]
     pub fn new<P: IsA<Window>, Q: IsA<gio::ActionGroup>>(
         window: &P,
         group: &Q,
@@ -48,7 +47,6 @@ impl PadController {
 
     #[cfg(any(feature = "v3_22", feature = "dox"))]
     #[cfg_attr(feature = "dox", doc(cfg(feature = "v3_22")))]
-    #[doc(alias = "gtk_pad_controller_set_action")]
     pub fn set_action(
         &self,
         type_: PadActionType,

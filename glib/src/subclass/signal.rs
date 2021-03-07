@@ -143,7 +143,6 @@ impl SignalId {
         Self(id)
     }
 
-    #[doc(alias = "g_signal_parse_name")]
     pub fn parse_name(name: &str, type_: Type, force_detail: bool) -> Option<(Self, crate::Quark)> {
         let mut signal_id = std::mem::MaybeUninit::uninit();
         let mut detail_quark = std::mem::MaybeUninit::uninit();
@@ -168,7 +167,6 @@ impl SignalId {
     }
 
     /// Find a SignalId by it's `name` and the `type` it connects to.
-    #[doc(alias = "g_signal_lookup")]
     pub fn lookup(name: &str, type_: Type) -> Option<Self> {
         unsafe {
             let signal_id = gobject_ffi::g_signal_lookup(name.to_glib_none().0, type_.to_glib());
@@ -181,7 +179,6 @@ impl SignalId {
     }
 
     /// Queries more in-depth information about the current signal.
-    #[doc(alias = "g_signal_query")]
     pub fn query(&self) -> SignalQuery {
         unsafe {
             let mut query_ptr = std::mem::MaybeUninit::uninit();
@@ -193,7 +190,6 @@ impl SignalId {
     }
 
     /// Find the signal name.
-    #[doc(alias = "g_signal_name")]
     pub fn name<'a>(&self) -> &'a str {
         unsafe {
             let ptr = gobject_ffi::g_signal_name(self.to_glib());

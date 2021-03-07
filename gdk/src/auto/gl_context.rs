@@ -30,21 +30,18 @@ glib::wrapper! {
 impl GLContext {
     #[cfg(any(feature = "v3_16", feature = "dox"))]
     #[cfg_attr(feature = "dox", doc(cfg(feature = "v3_16")))]
-    #[doc(alias = "gdk_gl_context_get_debug_enabled")]
     pub fn get_debug_enabled(&self) -> bool {
         unsafe { from_glib(ffi::gdk_gl_context_get_debug_enabled(self.to_glib_none().0)) }
     }
 
     #[cfg(any(feature = "v3_16", feature = "dox"))]
     #[cfg_attr(feature = "dox", doc(cfg(feature = "v3_16")))]
-    #[doc(alias = "gdk_gl_context_get_display")]
     pub fn get_display(&self) -> Option<Display> {
         unsafe { from_glib_none(ffi::gdk_gl_context_get_display(self.to_glib_none().0)) }
     }
 
     #[cfg(any(feature = "v3_16", feature = "dox"))]
     #[cfg_attr(feature = "dox", doc(cfg(feature = "v3_16")))]
-    #[doc(alias = "gdk_gl_context_get_forward_compatible")]
     pub fn get_forward_compatible(&self) -> bool {
         unsafe {
             from_glib(ffi::gdk_gl_context_get_forward_compatible(
@@ -55,7 +52,6 @@ impl GLContext {
 
     #[cfg(any(feature = "v3_16", feature = "dox"))]
     #[cfg_attr(feature = "dox", doc(cfg(feature = "v3_16")))]
-    #[doc(alias = "gdk_gl_context_get_required_version")]
     pub fn get_required_version(&self) -> (i32, i32) {
         unsafe {
             let mut major = mem::MaybeUninit::uninit();
@@ -73,7 +69,6 @@ impl GLContext {
 
     #[cfg(any(feature = "v3_16", feature = "dox"))]
     #[cfg_attr(feature = "dox", doc(cfg(feature = "v3_16")))]
-    #[doc(alias = "gdk_gl_context_get_shared_context")]
     pub fn get_shared_context(&self) -> Option<GLContext> {
         unsafe {
             from_glib_none(ffi::gdk_gl_context_get_shared_context(
@@ -84,14 +79,12 @@ impl GLContext {
 
     #[cfg(any(feature = "v3_22", feature = "dox"))]
     #[cfg_attr(feature = "dox", doc(cfg(feature = "v3_22")))]
-    #[doc(alias = "gdk_gl_context_get_use_es")]
     pub fn get_use_es(&self) -> bool {
         unsafe { from_glib(ffi::gdk_gl_context_get_use_es(self.to_glib_none().0)) }
     }
 
     #[cfg(any(feature = "v3_16", feature = "dox"))]
     #[cfg_attr(feature = "dox", doc(cfg(feature = "v3_16")))]
-    #[doc(alias = "gdk_gl_context_get_version")]
     pub fn get_version(&self) -> (i32, i32) {
         unsafe {
             let mut major = mem::MaybeUninit::uninit();
@@ -109,21 +102,18 @@ impl GLContext {
 
     #[cfg(any(feature = "v3_16", feature = "dox"))]
     #[cfg_attr(feature = "dox", doc(cfg(feature = "v3_16")))]
-    #[doc(alias = "gdk_gl_context_get_window")]
     pub fn get_window(&self) -> Option<Window> {
         unsafe { from_glib_none(ffi::gdk_gl_context_get_window(self.to_glib_none().0)) }
     }
 
     #[cfg(any(feature = "v3_20", feature = "dox"))]
     #[cfg_attr(feature = "dox", doc(cfg(feature = "v3_20")))]
-    #[doc(alias = "gdk_gl_context_is_legacy")]
     pub fn is_legacy(&self) -> bool {
         unsafe { from_glib(ffi::gdk_gl_context_is_legacy(self.to_glib_none().0)) }
     }
 
     #[cfg(any(feature = "v3_16", feature = "dox"))]
     #[cfg_attr(feature = "dox", doc(cfg(feature = "v3_16")))]
-    #[doc(alias = "gdk_gl_context_make_current")]
     pub fn make_current(&self) {
         unsafe {
             ffi::gdk_gl_context_make_current(self.to_glib_none().0);
@@ -132,7 +122,6 @@ impl GLContext {
 
     #[cfg(any(feature = "v3_16", feature = "dox"))]
     #[cfg_attr(feature = "dox", doc(cfg(feature = "v3_16")))]
-    #[doc(alias = "gdk_gl_context_realize")]
     pub fn realize(&self) -> Result<(), glib::Error> {
         unsafe {
             let mut error = ptr::null_mut();
@@ -147,7 +136,6 @@ impl GLContext {
 
     #[cfg(any(feature = "v3_16", feature = "dox"))]
     #[cfg_attr(feature = "dox", doc(cfg(feature = "v3_16")))]
-    #[doc(alias = "gdk_gl_context_set_debug_enabled")]
     pub fn set_debug_enabled(&self, enabled: bool) {
         unsafe {
             ffi::gdk_gl_context_set_debug_enabled(self.to_glib_none().0, enabled.to_glib());
@@ -156,7 +144,6 @@ impl GLContext {
 
     #[cfg(any(feature = "v3_16", feature = "dox"))]
     #[cfg_attr(feature = "dox", doc(cfg(feature = "v3_16")))]
-    #[doc(alias = "gdk_gl_context_set_forward_compatible")]
     pub fn set_forward_compatible(&self, compatible: bool) {
         unsafe {
             ffi::gdk_gl_context_set_forward_compatible(self.to_glib_none().0, compatible.to_glib());
@@ -165,7 +152,6 @@ impl GLContext {
 
     #[cfg(any(feature = "v3_16", feature = "dox"))]
     #[cfg_attr(feature = "dox", doc(cfg(feature = "v3_16")))]
-    #[doc(alias = "gdk_gl_context_set_required_version")]
     pub fn set_required_version(&self, major: i32, minor: i32) {
         unsafe {
             ffi::gdk_gl_context_set_required_version(self.to_glib_none().0, major, minor);
@@ -174,7 +160,6 @@ impl GLContext {
 
     #[cfg(any(feature = "v3_22", feature = "dox"))]
     #[cfg_attr(feature = "dox", doc(cfg(feature = "v3_22")))]
-    #[doc(alias = "gdk_gl_context_set_use_es")]
     pub fn set_use_es(&self, use_es: i32) {
         unsafe {
             ffi::gdk_gl_context_set_use_es(self.to_glib_none().0, use_es);
@@ -183,7 +168,6 @@ impl GLContext {
 
     #[cfg(any(feature = "v3_16", feature = "dox"))]
     #[cfg_attr(feature = "dox", doc(cfg(feature = "v3_16")))]
-    #[doc(alias = "gdk_gl_context_clear_current")]
     pub fn clear_current() {
         assert_initialized_main_thread!();
         unsafe {
@@ -193,7 +177,6 @@ impl GLContext {
 
     #[cfg(any(feature = "v3_16", feature = "dox"))]
     #[cfg_attr(feature = "dox", doc(cfg(feature = "v3_16")))]
-    #[doc(alias = "gdk_gl_context_get_current")]
     pub fn get_current() -> Option<GLContext> {
         assert_initialized_main_thread!();
         unsafe { from_glib_none(ffi::gdk_gl_context_get_current()) }

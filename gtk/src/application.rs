@@ -31,7 +31,6 @@ impl Application {
         }
     }
 
-    #[doc(alias = "gtk_application_new")]
     pub fn new(
         application_id: Option<&str>,
         flags: ApplicationFlags,

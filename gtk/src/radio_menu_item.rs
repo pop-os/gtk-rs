@@ -7,7 +7,6 @@ use glib::translate::*;
 use std::ptr;
 
 impl RadioMenuItem {
-    #[doc(alias = "gtk_radio_menu_item_new")]
     pub fn new() -> RadioMenuItem {
         assert_initialized_main_thread!();
         unsafe {
@@ -15,7 +14,6 @@ impl RadioMenuItem {
         }
     }
 
-    #[doc(alias = "gtk_radio_menu_item_new_with_label")]
     pub fn with_label(label: &str) -> RadioMenuItem {
         assert_initialized_main_thread!();
         unsafe {
@@ -27,7 +25,6 @@ impl RadioMenuItem {
         }
     }
 
-    #[doc(alias = "gtk_radio_menu_item_new_with_mnemonic")]
     pub fn with_mnemonic(label: &str) -> RadioMenuItem {
         assert_initialized_main_thread!();
         unsafe {

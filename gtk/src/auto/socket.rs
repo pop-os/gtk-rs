@@ -28,7 +28,6 @@ glib::wrapper! {
 }
 
 impl Socket {
-    #[doc(alias = "gtk_socket_new")]
     pub fn new() -> Socket {
         assert_initialized_main_thread!();
         unsafe { Widget::from_glib_none(ffi::gtk_socket_new()).unsafe_cast() }
@@ -380,13 +379,10 @@ impl SocketBuilder {
 pub const NONE_SOCKET: Option<&Socket> = None;
 
 pub trait GtkSocketExt: 'static {
-    #[doc(alias = "gtk_socket_add_id")]
     fn add_id(&self, window: xlib::Window);
 
-    #[doc(alias = "gtk_socket_get_id")]
     fn get_id(&self) -> xlib::Window;
 
-    #[doc(alias = "gtk_socket_get_plug_window")]
     fn get_plug_window(&self) -> Option<gdk::Window>;
 
     fn connect_plug_added<F: Fn(&Self) + 'static>(&self, f: F) -> SignalHandlerId;

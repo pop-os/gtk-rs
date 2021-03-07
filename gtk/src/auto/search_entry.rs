@@ -37,7 +37,6 @@ glib::wrapper! {
 }
 
 impl SearchEntry {
-    #[doc(alias = "gtk_search_entry_new")]
     pub fn new() -> SearchEntry {
         assert_initialized_main_thread!();
         unsafe { Widget::from_glib_none(ffi::gtk_search_entry_new()).unsafe_cast() }
@@ -754,7 +753,6 @@ pub const NONE_SEARCH_ENTRY: Option<&SearchEntry> = None;
 pub trait SearchEntryExt: 'static {
     #[cfg(any(feature = "v3_16", feature = "dox"))]
     #[cfg_attr(feature = "dox", doc(cfg(feature = "v3_16")))]
-    #[doc(alias = "gtk_search_entry_handle_event")]
     fn handle_event(&self, event: &gdk::Event) -> bool;
 
     #[cfg(any(feature = "v3_16", feature = "dox"))]

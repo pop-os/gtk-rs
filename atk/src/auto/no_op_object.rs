@@ -29,7 +29,6 @@ glib::wrapper! {
 }
 
 impl NoOpObject {
-    #[doc(alias = "atk_no_op_object_new")]
     pub fn new<P: IsA<glib::Object>>(obj: &P) -> NoOpObject {
         assert_initialized_main_thread!();
         unsafe {

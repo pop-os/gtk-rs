@@ -93,7 +93,6 @@ impl ParamSpec {
         unsafe { from_glib((*self.to_glib_none().0).flags) }
     }
 
-    #[doc(alias = "g_param_spec_get_blurb")]
     pub fn get_blurb(&self) -> &str {
         unsafe {
             CStr::from_ptr(gobject_ffi::g_param_spec_get_blurb(self.to_glib_none().0))
@@ -102,7 +101,6 @@ impl ParamSpec {
         }
     }
 
-    #[doc(alias = "g_param_spec_get_default_value")]
     pub fn get_default_value(&self) -> &Value {
         unsafe {
             &*(gobject_ffi::g_param_spec_get_default_value(self.to_glib_none().0)
@@ -110,7 +108,6 @@ impl ParamSpec {
         }
     }
 
-    #[doc(alias = "g_param_spec_get_name")]
     pub fn get_name<'a>(&self) -> &'a str {
         unsafe {
             CStr::from_ptr(gobject_ffi::g_param_spec_get_name(self.to_glib_none().0))
@@ -121,7 +118,6 @@ impl ParamSpec {
 
     #[cfg(any(feature = "v2_46", feature = "dox"))]
     #[cfg_attr(feature = "dox", doc(cfg(feature = "v2_46")))]
-    #[doc(alias = "g_param_spec_get_name_quark")]
     pub fn get_name_quark(&self) -> crate::Quark {
         unsafe {
             from_glib(gobject_ffi::g_param_spec_get_name_quark(
@@ -130,7 +126,6 @@ impl ParamSpec {
         }
     }
 
-    #[doc(alias = "g_param_spec_get_nick")]
     pub fn get_nick(&self) -> &str {
         unsafe {
             CStr::from_ptr(gobject_ffi::g_param_spec_get_nick(self.to_glib_none().0))
@@ -143,7 +138,6 @@ impl ParamSpec {
     //    unsafe { TODO: call gobject_ffi::g_param_spec_get_qdata() }
     //}
 
-    #[doc(alias = "g_param_spec_get_redirect_target")]
     pub fn get_redirect_target(&self) -> Option<ParamSpec> {
         unsafe {
             from_glib_none(gobject_ffi::g_param_spec_get_redirect_target(
@@ -164,7 +158,6 @@ impl ParamSpec {
     //    unsafe { TODO: call gobject_ffi::g_param_spec_steal_qdata() }
     //}
 
-    #[doc(alias = "g_param_spec_boolean")]
     pub fn boolean(
         name: &str,
         nick: &str,
@@ -183,7 +176,6 @@ impl ParamSpec {
         }
     }
 
-    #[doc(alias = "g_param_spec_boxed")]
     pub fn boxed(
         name: &str,
         nick: &str,
@@ -202,7 +194,6 @@ impl ParamSpec {
         }
     }
 
-    #[doc(alias = "g_param_spec_char")]
     pub fn char(
         name: &str,
         nick: &str,
@@ -225,7 +216,6 @@ impl ParamSpec {
         }
     }
 
-    #[doc(alias = "g_param_spec_double")]
     pub fn double(
         name: &str,
         nick: &str,
@@ -248,7 +238,6 @@ impl ParamSpec {
         }
     }
 
-    #[doc(alias = "g_param_spec_enum")]
     pub fn enum_(
         name: &str,
         nick: &str,
@@ -269,7 +258,6 @@ impl ParamSpec {
         }
     }
 
-    #[doc(alias = "g_param_spec_flags")]
     pub fn flags(
         name: &str,
         nick: &str,
@@ -290,7 +278,6 @@ impl ParamSpec {
         }
     }
 
-    #[doc(alias = "g_param_spec_float")]
     pub fn float(
         name: &str,
         nick: &str,
@@ -313,7 +300,6 @@ impl ParamSpec {
         }
     }
 
-    #[doc(alias = "g_param_spec_gtype")]
     pub fn gtype(
         name: &str,
         nick: &str,
@@ -332,7 +318,6 @@ impl ParamSpec {
         }
     }
 
-    #[doc(alias = "g_param_spec_int")]
     pub fn int(
         name: &str,
         nick: &str,
@@ -355,7 +340,6 @@ impl ParamSpec {
         }
     }
 
-    #[doc(alias = "g_param_spec_int64")]
     pub fn int64(
         name: &str,
         nick: &str,
@@ -378,7 +362,6 @@ impl ParamSpec {
         }
     }
 
-    #[doc(alias = "g_param_spec_long")]
     pub fn long(
         name: &str,
         nick: &str,
@@ -401,7 +384,6 @@ impl ParamSpec {
         }
     }
 
-    #[doc(alias = "g_param_spec_object")]
     pub fn object(
         name: &str,
         nick: &str,
@@ -420,7 +402,6 @@ impl ParamSpec {
         }
     }
 
-    #[doc(alias = "g_param_spec_override")]
     pub fn override_(name: &str, overridden: &ParamSpec) -> ParamSpec {
         unsafe {
             from_glib_none(gobject_ffi::g_param_spec_override(
@@ -430,7 +411,6 @@ impl ParamSpec {
         }
     }
 
-    #[doc(alias = "g_param_spec_param")]
     pub fn param(
         name: &str,
         nick: &str,
@@ -449,7 +429,6 @@ impl ParamSpec {
         }
     }
 
-    #[doc(alias = "g_param_spec_pointer")]
     pub fn pointer(name: &str, nick: &str, blurb: &str, flags: ParamFlags) -> ParamSpec {
         unsafe {
             from_glib_none(gobject_ffi::g_param_spec_pointer(
@@ -461,7 +440,6 @@ impl ParamSpec {
         }
     }
 
-    #[doc(alias = "g_param_spec_string")]
     pub fn string(
         name: &str,
         nick: &str,
@@ -481,7 +459,6 @@ impl ParamSpec {
         }
     }
 
-    #[doc(alias = "g_param_spec_uchar")]
     pub fn uchar(
         name: &str,
         nick: &str,
@@ -504,7 +481,6 @@ impl ParamSpec {
         }
     }
 
-    #[doc(alias = "g_param_spec_uint")]
     pub fn uint(
         name: &str,
         nick: &str,
@@ -527,7 +503,6 @@ impl ParamSpec {
         }
     }
 
-    #[doc(alias = "g_param_spec_uint64")]
     pub fn uint64(
         name: &str,
         nick: &str,
@@ -550,7 +525,6 @@ impl ParamSpec {
         }
     }
 
-    #[doc(alias = "g_param_spec_ulong")]
     pub fn ulong(
         name: &str,
         nick: &str,
@@ -573,7 +547,6 @@ impl ParamSpec {
         }
     }
 
-    #[doc(alias = "g_param_spec_unichar")]
     pub fn unichar(
         name: &str,
         nick: &str,
@@ -592,7 +565,6 @@ impl ParamSpec {
         }
     }
 
-    #[doc(alias = "g_param_spec_value_array")]
     pub fn value_array(
         name: &str,
         nick: &str,
@@ -611,7 +583,6 @@ impl ParamSpec {
         }
     }
 
-    #[doc(alias = "g_param_spec_variant")]
     pub fn variant(
         name: &str,
         nick: &str,

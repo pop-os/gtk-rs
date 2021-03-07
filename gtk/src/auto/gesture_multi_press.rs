@@ -28,7 +28,6 @@ glib::wrapper! {
 }
 
 impl GestureMultiPress {
-    #[doc(alias = "gtk_gesture_multi_press_new")]
     pub fn new<P: IsA<Widget>>(widget: &P) -> GestureMultiPress {
         skip_assert_initialized!();
         unsafe {
@@ -39,7 +38,6 @@ impl GestureMultiPress {
         }
     }
 
-    #[doc(alias = "gtk_gesture_multi_press_get_area")]
     pub fn get_area(&self) -> Option<gdk::Rectangle> {
         unsafe {
             let mut rect = gdk::Rectangle::uninitialized();
@@ -55,7 +53,6 @@ impl GestureMultiPress {
         }
     }
 
-    #[doc(alias = "gtk_gesture_multi_press_set_area")]
     pub fn set_area(&self, rect: Option<&gdk::Rectangle>) {
         unsafe {
             ffi::gtk_gesture_multi_press_set_area(self.to_glib_none().0, rect.to_glib_none().0);

@@ -37,34 +37,28 @@ glib::wrapper! {
 }
 
 impl DragContext {
-    #[doc(alias = "gdk_drag_context_get_actions")]
     pub fn get_actions(&self) -> DragAction {
         unsafe { from_glib(ffi::gdk_drag_context_get_actions(self.to_glib_none().0)) }
     }
 
-    #[doc(alias = "gdk_drag_context_get_dest_window")]
     pub fn get_dest_window(&self) -> Window {
         unsafe { from_glib_none(ffi::gdk_drag_context_get_dest_window(self.to_glib_none().0)) }
     }
 
-    #[doc(alias = "gdk_drag_context_get_device")]
     pub fn get_device(&self) -> Device {
         unsafe { from_glib_none(ffi::gdk_drag_context_get_device(self.to_glib_none().0)) }
     }
 
     #[cfg(any(feature = "v3_20", feature = "dox"))]
     #[cfg_attr(feature = "dox", doc(cfg(feature = "v3_20")))]
-    #[doc(alias = "gdk_drag_context_get_drag_window")]
     pub fn get_drag_window(&self) -> Option<Window> {
         unsafe { from_glib_none(ffi::gdk_drag_context_get_drag_window(self.to_glib_none().0)) }
     }
 
-    #[doc(alias = "gdk_drag_context_get_protocol")]
     pub fn get_protocol(&self) -> DragProtocol {
         unsafe { from_glib(ffi::gdk_drag_context_get_protocol(self.to_glib_none().0)) }
     }
 
-    #[doc(alias = "gdk_drag_context_get_selected_action")]
     pub fn get_selected_action(&self) -> DragAction {
         unsafe {
             from_glib(ffi::gdk_drag_context_get_selected_action(
@@ -73,7 +67,6 @@ impl DragContext {
         }
     }
 
-    #[doc(alias = "gdk_drag_context_get_source_window")]
     pub fn get_source_window(&self) -> Window {
         unsafe {
             from_glib_none(ffi::gdk_drag_context_get_source_window(
@@ -82,7 +75,6 @@ impl DragContext {
         }
     }
 
-    #[doc(alias = "gdk_drag_context_get_suggested_action")]
     pub fn get_suggested_action(&self) -> DragAction {
         unsafe {
             from_glib(ffi::gdk_drag_context_get_suggested_action(
@@ -91,7 +83,6 @@ impl DragContext {
         }
     }
 
-    #[doc(alias = "gdk_drag_context_list_targets")]
     pub fn list_targets(&self) -> Vec<Atom> {
         unsafe {
             FromGlibPtrContainer::from_glib_none(ffi::gdk_drag_context_list_targets(
@@ -102,7 +93,6 @@ impl DragContext {
 
     #[cfg(any(feature = "v3_20", feature = "dox"))]
     #[cfg_attr(feature = "dox", doc(cfg(feature = "v3_20")))]
-    #[doc(alias = "gdk_drag_context_manage_dnd")]
     pub fn manage_dnd(&self, ipc_window: &Window, actions: DragAction) -> bool {
         unsafe {
             from_glib(ffi::gdk_drag_context_manage_dnd(
@@ -113,7 +103,6 @@ impl DragContext {
         }
     }
 
-    #[doc(alias = "gdk_drag_context_set_device")]
     pub fn set_device(&self, device: &Device) {
         unsafe {
             ffi::gdk_drag_context_set_device(self.to_glib_none().0, device.to_glib_none().0);
@@ -122,7 +111,6 @@ impl DragContext {
 
     #[cfg(any(feature = "v3_20", feature = "dox"))]
     #[cfg_attr(feature = "dox", doc(cfg(feature = "v3_20")))]
-    #[doc(alias = "gdk_drag_context_set_hotspot")]
     pub fn set_hotspot(&self, hot_x: i32, hot_y: i32) {
         unsafe {
             ffi::gdk_drag_context_set_hotspot(self.to_glib_none().0, hot_x, hot_y);

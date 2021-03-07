@@ -18,7 +18,6 @@ glib::wrapper! {
 }
 
 impl DBusNodeInfo {
-    #[doc(alias = "g_dbus_node_info_new_for_xml")]
     pub fn new_for_xml(xml_data: &str) -> Result<DBusNodeInfo, glib::Error> {
         unsafe {
             let mut error = ptr::null_mut();
@@ -31,7 +30,6 @@ impl DBusNodeInfo {
         }
     }
 
-    #[doc(alias = "g_dbus_node_info_generate_xml")]
     pub fn generate_xml(&self, indent: u32, string_builder: &mut glib::String) {
         unsafe {
             ffi::g_dbus_node_info_generate_xml(
@@ -42,7 +40,6 @@ impl DBusNodeInfo {
         }
     }
 
-    #[doc(alias = "g_dbus_node_info_lookup_interface")]
     pub fn lookup_interface(&self, name: &str) -> Option<DBusInterfaceInfo> {
         unsafe {
             from_glib_none(ffi::g_dbus_node_info_lookup_interface(
