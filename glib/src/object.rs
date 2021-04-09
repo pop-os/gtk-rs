@@ -82,28 +82,6 @@ pub trait UnsafeFrom<T> {
 /// implementations exist.
 pub unsafe trait IsA<T: ObjectType>: ObjectType + AsRef<T> + 'static {}
 
-#[derive(Debug)]
-pub struct ClassRef<T: ObjectType>(ptr::NonNull<Class<T>>);
-
-impl<T: ObjectType> ops::Deref for ClassRef<T> {
-    type Target = Class<T>;
-
-    fn deref(&self) -> &Class<T> {
-        unsafe { self.0.as_ref() }
-    }
-}
-
-impl<T: ObjectType> Drop for ClassRef<T> {
-    fn drop(&mut self) {
-        unsafe {
-            gobject_ffi::g_type_class_unref(self.0.as_ptr() as *mut _);
-        }
-    }
-}
-
-unsafe impl<T: ObjectType> Send for ClassRef<T> {}
-unsafe impl<T: ObjectType> Sync for ClassRef<T> {}
-
 /// Upcasting and downcasting support.
 ///
 /// Provides conversions up and down the class hierarchy tree.
@@ -1025,6 +1003,9 @@ macro_rules! glib_object_wrapper {
     (@object [$($attr:meta)*] $name:ident, $ffi_name:ty, $ffi_class_name:ty, @get_type $get_type_expr:expr) => {
         $crate::glib_object_wrapper!(@generic_impl [$($attr)*] $name, $ffi_name, $ffi_class_name,
             @get_type $get_type_expr);
+
+        #[doc(hidden)]
+        unsafe impl $crate::object::IsClass for $name { }
     };
 
     (@object [$($attr:meta)*] $name:ident, $ffi_name:ty, $ffi_class_name:ty,
@@ -1043,10 +1024,14 @@ macro_rules! glib_object_wrapper {
 
         #[doc(hidden)]
         unsafe impl $crate::object::IsA<$crate::object::Object> for $name { }
+
+        #[doc(hidden)]
+        unsafe impl $crate::object::IsClass for $name { }
     };
 
-    (@interface [$($attr:meta)*] $name:ident, $ffi_name:ty, @get_type $get_type_expr:expr, @requires [$($requires:tt)*]) => {
-        $crate::glib_object_wrapper!(@generic_impl [$($attr)*] $name, $ffi_name, (),
+    (@interface [$($attr:meta)*] $name:ident, $ffi_name:ty, $ffi_class_name:ty,
+        @get_type $get_type_expr:expr, @requires [$($requires:tt)*]) => {
+        $crate::glib_object_wrapper!(@generic_impl [$($attr)*] $name, $ffi_name, $ffi_class_name,
             @get_type $get_type_expr);
         $crate::glib_object_wrapper!(@munch_impls $name, $($requires)*);
 
@@ -1059,6 +1044,9 @@ macro_rules! glib_object_wrapper {
 
         #[doc(hidden)]
         unsafe impl $crate::object::IsA<$crate::object::Object> for $name { }
+
+        #[doc(hidden)]
+        unsafe impl $crate::object::IsInterface for $name { }
     };
 }
 
@@ -1070,7 +1058,9 @@ pub type ObjectClass = Class<Object>;
 
 impl Object {
     #[allow(clippy::new_ret_no_self)]
-    pub fn new<T: IsA<Object>>(properties: &[(&str, &dyn ToValue)]) -> Result<T, BoolError> {
+    pub fn new<T: IsA<Object> + IsClass>(
+        properties: &[(&str, &dyn ToValue)],
+    ) -> Result<T, BoolError> {
         Ok(Object::with_type(T::static_type(), properties)?
             .downcast()
             .unwrap())
@@ -1184,6 +1174,11 @@ pub trait ObjectExt: ObjectType {
 
     fn get_type(&self) -> Type;
     fn get_object_class(&self) -> &ObjectClass;
+    fn get_class(&self) -> &Class<Self>
+    where
+        Self: IsClass;
+    fn get_class_of<T: IsClass>(&self) -> Option<&Class<T>>;
+    fn get_interface<T: IsInterface>(&self) -> Option<InterfaceRef<T>>;
 
     fn set_property<'a, N: Into<&'a str>, V: ToValue>(
         &self,
@@ -1211,8 +1206,11 @@ pub trait ObjectExt: ObjectType {
 
     /// # Safety
     ///
+    /// The returned pointer can become invalid by a call to
+    /// `set_qdata`, `steal_qdata`, `set_data` or `steal_data`.
+    ///
     /// The caller is responsible for ensuring the returned value is of a suitable type
-    unsafe fn get_qdata<QD: 'static>(&self, key: Quark) -> Option<&QD>;
+    unsafe fn get_qdata<QD: 'static>(&self, key: Quark) -> Option<ptr::NonNull<QD>>;
 
     /// # Safety
     ///
@@ -1226,8 +1224,11 @@ pub trait ObjectExt: ObjectType {
 
     /// # Safety
     ///
+    /// The returned pointer can become invalid by a call to
+    /// `set_qdata`, `steal_qdata`, `set_data` or `steal_data`.
+    ///
     /// The caller is responsible for ensuring the returned value is of a suitable type
-    unsafe fn get_data<QD: 'static>(&self, key: &str) -> Option<&QD>;
+    unsafe fn get_data<QD: 'static>(&self, key: &str) -> Option<ptr::NonNull<QD>>;
 
     /// # Safety
     ///
@@ -1247,6 +1248,17 @@ pub trait ObjectExt: ObjectType {
     where
         N: Into<&'a str>,
         F: Fn(&[Value]) -> Option<Value> + Send + Sync + 'static;
+    /// Same as `connect` but takes a `SignalId` instead of a signal name.
+    fn connect_id<F>(
+        &self,
+        signal_id: SignalId,
+        details: Option<Quark>,
+        after: bool,
+        callback: F,
+    ) -> Result<SignalHandlerId, BoolError>
+    where
+        F: Fn(&[Value]) -> Option<Value> + Send + Sync + 'static;
+
     fn connect_local<'a, N, F>(
         &self,
         signal_name: N,
@@ -1256,6 +1268,17 @@ pub trait ObjectExt: ObjectType {
     where
         N: Into<&'a str>,
         F: Fn(&[Value]) -> Option<Value> + 'static;
+    /// Same as `connect_local` but takes a `SignalId` instead of a signal name.
+    fn connect_local_id<F>(
+        &self,
+        signal_id: SignalId,
+        details: Option<Quark>,
+        after: bool,
+        callback: F,
+    ) -> Result<SignalHandlerId, BoolError>
+    where
+        F: Fn(&[Value]) -> Option<Value> + 'static;
+
     unsafe fn connect_unsafe<'a, N, F>(
         &self,
         signal_name: N,
@@ -1264,6 +1287,16 @@ pub trait ObjectExt: ObjectType {
     ) -> Result<SignalHandlerId, BoolError>
     where
         N: Into<&'a str>,
+        F: Fn(&[Value]) -> Option<Value>;
+    /// Same as `connect_unsafe` but takes a `SignalId` instead of a signal name.
+    unsafe fn connect_unsafe_id<F>(
+        &self,
+        signal_id: SignalId,
+        details: Option<Quark>,
+        after: bool,
+        callback: F,
+    ) -> Result<SignalHandlerId, BoolError>
+    where
         F: Fn(&[Value]) -> Option<Value>;
     /// Emit signal by signal id.
     fn emit(&self, signal_id: SignalId, args: &[&dyn ToValue]) -> Result<Option<Value>, BoolError>;
@@ -1347,6 +1380,34 @@ impl<T: ObjectType> ObjectExt for T {
             &*klass
         }
     }
+
+    fn get_class(&self) -> &Class<Self>
+    where
+        Self: IsClass,
+    {
+        unsafe {
+            let obj: *mut gobject_ffi::GObject = self.as_object_ref().to_glib_none().0;
+            let klass = (*obj).g_type_instance.g_class as *const Class<Self>;
+            &*klass
+        }
+    }
+
+    fn get_class_of<U: IsClass>(&self) -> Option<&Class<U>> {
+        if !self.is::<U>() {
+            return None;
+        }
+
+        unsafe {
+            let obj: *mut gobject_ffi::GObject = self.as_object_ref().to_glib_none().0;
+            let klass = (*obj).g_type_instance.g_class as *const Class<U>;
+            Some(&*klass)
+        }
+    }
+
+    fn get_interface<U: IsInterface>(&self) -> Option<InterfaceRef<U>> {
+        Interface::from_class(self.get_object_class())
+    }
+
     fn set_properties(&self, property_values: &[(&str, &dyn ToValue)]) -> Result<(), BoolError> {
         use std::ffi::CString;
 
@@ -1545,14 +1606,11 @@ impl<T: ObjectType> ObjectExt for T {
         );
     }
 
-    unsafe fn get_qdata<QD: 'static>(&self, key: Quark) -> Option<&QD> {
-        let ptr =
-            gobject_ffi::g_object_get_qdata(self.as_object_ref().to_glib_none().0, key.to_glib());
-        if ptr.is_null() {
-            None
-        } else {
-            Some(&*(ptr as *const QD))
-        }
+    unsafe fn get_qdata<QD: 'static>(&self, key: Quark) -> Option<ptr::NonNull<QD>> {
+        ptr::NonNull::new(gobject_ffi::g_object_get_qdata(
+            self.as_object_ref().to_glib_none().0,
+            key.to_glib(),
+        ) as *mut QD)
     }
 
     unsafe fn steal_qdata<QD: 'static>(&self, key: Quark) -> Option<QD> {
@@ -1570,7 +1628,7 @@ impl<T: ObjectType> ObjectExt for T {
         self.set_qdata::<QD>(Quark::from_string(key), value)
     }
 
-    unsafe fn get_data<QD: 'static>(&self, key: &str) -> Option<&QD> {
+    unsafe fn get_data<QD: 'static>(&self, key: &str) -> Option<ptr::NonNull<QD>> {
         self.get_qdata::<QD>(Quark::from_string(key))
     }
 
@@ -1721,6 +1779,19 @@ impl<T: ObjectType> ObjectExt for T {
         unsafe { self.connect_unsafe(signal_name, after, callback) }
     }
 
+    fn connect_id<F>(
+        &self,
+        signal_id: SignalId,
+        details: Option<Quark>,
+        after: bool,
+        callback: F,
+    ) -> Result<SignalHandlerId, BoolError>
+    where
+        F: Fn(&[Value]) -> Option<Value> + Send + Sync + 'static,
+    {
+        unsafe { self.connect_unsafe_id(signal_id, details, after, callback) }
+    }
+
     fn connect_local<'a, N, F>(
         &self,
         signal_name: N,
@@ -1740,6 +1811,25 @@ impl<T: ObjectType> ObjectExt for T {
         }
     }
 
+    fn connect_local_id<F>(
+        &self,
+        signal_id: SignalId,
+        details: Option<Quark>,
+        after: bool,
+        callback: F,
+    ) -> Result<SignalHandlerId, BoolError>
+    where
+        F: Fn(&[Value]) -> Option<Value> + 'static,
+    {
+        let callback = crate::ThreadGuard::new(callback);
+
+        unsafe {
+            self.connect_unsafe_id(signal_id, details, after, move |values| {
+                (callback.get_ref())(values)
+            })
+        }
+    }
+
     unsafe fn connect_unsafe<'a, N, F>(
         &self,
         signal_name: N,
@@ -1752,12 +1842,34 @@ impl<T: ObjectType> ObjectExt for T {
     {
         let signal_name: &str = signal_name.into();
         let type_ = self.get_type();
-
-        let (signal_id, signal_detail) = SignalId::parse_name(signal_name, type_, true)
+        let (signal_id, details) = SignalId::parse_name(signal_name, type_, true)
             .ok_or_else(|| bool_error!("Signal '{}' of type '{}' not found", signal_name, type_))?;
-        let signal_query = signal_id.query();
+        self.connect_unsafe_id(signal_id, Some(details), after, callback)
+    }
 
+    unsafe fn connect_unsafe_id<F>(
+        &self,
+        signal_id: SignalId,
+        details: Option<Quark>,
+        after: bool,
+        callback: F,
+    ) -> Result<SignalHandlerId, BoolError>
+    where
+        F: Fn(&[Value]) -> Option<Value>,
+    {
+        let signal_query = signal_id.query();
+        let type_ = self.get_type();
         let return_type: Type = signal_query.return_type().into();
+        let signal_name = signal_id.name();
+
+        let signal_query_type = signal_query.type_();
+        if !type_.is_a(signal_query_type) {
+            panic!(
+                "Signal '{}' of type '{}' but got type '{}'",
+                signal_name, type_, signal_query_type
+            );
+        }
+
         let closure = if return_type == Type::UNIT {
             Closure::new_unsafe(move |values| {
                 let ret = callback(values);
@@ -1823,7 +1935,7 @@ impl<T: ObjectType> ObjectExt for T {
         let handler = gobject_ffi::g_signal_connect_closure_by_id(
             self.as_object_ref().to_glib_none().0,
             signal_id.to_glib(),
-            signal_detail.to_glib(),
+            details.map(|d| d.to_glib()).unwrap_or(0), // 0 matches no detail
             closure.to_glib_none().0,
             after.to_glib(),
         );
@@ -2514,20 +2626,26 @@ impl<'a> BindingBuilder<'a> {
     }
 }
 
+/// Class struct of type `T`.
 #[repr(transparent)]
-pub struct Class<T: ObjectType>(T::GlibClassType);
+pub struct Class<T: IsClass>(T::GlibClassType);
 
-impl<T: ObjectType> Class<T> {
+impl<T: IsClass> Class<T> {
     /// Get the type id for this class.
+    ///
+    /// This is not equivalent to `T::static_type()` but is the type of the subclass of `T` where
+    /// this class belongs to.
     pub fn get_type(&self) -> Type {
         unsafe {
+            // This also works for interfaces because they also have the type
+            // as the first struct field.
             let klass = self as *const _ as *const gobject_ffi::GTypeClass;
             from_glib((*klass).g_type)
         }
     }
 
     /// Casts this class to a reference to a parent type's class.
-    pub fn upcast_ref<U: ObjectType>(&self) -> &Class<U>
+    pub fn upcast_ref<U: IsClass>(&self) -> &Class<U>
     where
         T: IsA<U>,
     {
@@ -2538,7 +2656,7 @@ impl<T: ObjectType> Class<T> {
     }
 
     /// Casts this class to a mutable reference to a parent type's class.
-    pub fn upcast_ref_mut<U: ObjectType>(&mut self) -> &mut Class<U>
+    pub fn upcast_ref_mut<U: IsClass>(&mut self) -> &mut Class<U>
     where
         T: IsA<U>,
     {
@@ -2550,7 +2668,7 @@ impl<T: ObjectType> Class<T> {
 
     /// Casts this class to a reference to a child type's class or
     /// fails if this class is not implementing the child class.
-    pub fn downcast_ref<U: ObjectType>(&self) -> Option<&Class<U>>
+    pub fn downcast_ref<U: IsClass>(&self) -> Option<&Class<U>>
     where
         U: IsA<T>,
     {
@@ -2566,7 +2684,7 @@ impl<T: ObjectType> Class<T> {
 
     /// Casts this class to a mutable reference to a child type's class or
     /// fails if this class is not implementing the child class.
-    pub fn downcast_ref_mut<U: ObjectType>(&mut self) -> Option<&mut Class<U>>
+    pub fn downcast_ref_mut<U: IsClass>(&mut self) -> Option<&mut Class<U>>
     where
         U: IsA<T>,
     {
@@ -2580,10 +2698,10 @@ impl<T: ObjectType> Class<T> {
         }
     }
 
-    /// Gets the class struct corresponding to `type_`.
+    /// Gets the class struct for `Self` of `type_`.
     ///
     /// This will return `None` if `type_` is not a subclass of `Self`.
-    pub fn from_type(type_: Type) -> Option<ClassRef<T>> {
+    pub fn from_type(type_: Type) -> Option<ClassRef<'static, T>> {
         if !type_.is_a(T::static_type()) {
             return None;
         }
@@ -2593,35 +2711,80 @@ impl<T: ObjectType> Class<T> {
             if ptr.is_null() {
                 None
             } else {
-                Some(ClassRef(ptr::NonNull::new_unchecked(ptr as *mut Self)))
+                Some(ClassRef(
+                    ptr::NonNull::new_unchecked(ptr as *mut Self),
+                    true,
+                    PhantomData,
+                ))
+            }
+        }
+    }
+
+    /// Gets the parent class struct, if any.
+    pub fn parent(&self) -> Option<ClassRef<T>> {
+        unsafe {
+            let ptr = gobject_ffi::g_type_class_peek_parent(&self.0 as *const _ as *mut _);
+            if ptr.is_null() {
+                None
+            } else {
+                Some(ClassRef(
+                    ptr::NonNull::new_unchecked(ptr as *mut Self),
+                    false,
+                    PhantomData,
+                ))
             }
         }
     }
 }
 
-unsafe impl<T: ObjectType> Send for Class<T> {}
-unsafe impl<T: ObjectType> Sync for Class<T> {}
+unsafe impl<T: IsClass> Send for Class<T> {}
+unsafe impl<T: IsClass> Sync for Class<T> {}
 
-impl<T: ObjectType> AsRef<T::GlibClassType> for Class<T> {
+impl<T: IsClass> AsRef<T::GlibClassType> for Class<T> {
     fn as_ref(&self) -> &T::GlibClassType {
         &self.0
     }
 }
 
-impl<T: ObjectType> AsMut<T::GlibClassType> for Class<T> {
+impl<T: IsClass> AsMut<T::GlibClassType> for Class<T> {
     fn as_mut(&mut self) -> &mut T::GlibClassType {
         &mut self.0
     }
 }
 
+/// Reference to the class struct of type `T`.
+#[derive(Debug)]
+pub struct ClassRef<'a, T: IsClass>(ptr::NonNull<Class<T>>, bool, PhantomData<&'a ()>);
+
+impl<'a, T: IsClass> ops::Deref for ClassRef<'a, T> {
+    type Target = Class<T>;
+
+    fn deref(&self) -> &Class<T> {
+        unsafe { self.0.as_ref() }
+    }
+}
+
+impl<'a, T: IsClass> Drop for ClassRef<'a, T> {
+    fn drop(&mut self) {
+        if self.1 {
+            unsafe {
+                gobject_ffi::g_type_class_unref(self.0.as_ptr() as *mut _);
+            }
+        }
+    }
+}
+
+unsafe impl<'a, T: IsClass> Send for ClassRef<'a, T> {}
+unsafe impl<'a, T: IsClass> Sync for ClassRef<'a, T> {}
+
 // This should require Self: IsA<Self::Super>, but that seems to cause a cycle error
-pub unsafe trait ParentClassIs: ObjectType {
-    type Parent: ObjectType;
+pub unsafe trait ParentClassIs: IsClass {
+    type Parent: IsClass;
 }
 
 /// Automatically implemented by `ObjectSubclass` variants of
 /// [`wrapper!`][crate::wrapper!]
-pub unsafe trait ObjectSubclassIs: ObjectType {
+pub unsafe trait ObjectSubclassIs: IsClass {
     type Subclass: ObjectSubclass;
 }
 
@@ -2641,6 +2804,161 @@ impl<T: ParentClassIs> ops::DerefMut for Class<T> {
         unsafe {
             let klass = self as *mut _ as *mut Self::Target;
             &mut *klass
+        }
+    }
+}
+
+/// Trait implemented by class types.
+pub unsafe trait IsClass: ObjectType {}
+
+/// Interface struct of type `T` for some type.
+#[repr(transparent)]
+pub struct Interface<T: IsInterface>(T::GlibClassType);
+
+impl<T: IsInterface> Interface<T> {
+    /// Get the type id for this interface.
+    ///
+    /// This is equivalent to `T::static_type()`.
+    pub fn get_type(&self) -> Type {
+        unsafe {
+            let klass = self as *const _ as *const gobject_ffi::GTypeInterface;
+            from_glib((*klass).g_type)
+        }
+    }
+
+    /// Get the type id for the instance type of this interface.
+    ///
+    /// This is not equivalent to `T::static_type()` but is the type id of the type this specific
+    /// interface belongs to.
+    pub fn get_instance_type(&self) -> Type {
+        unsafe {
+            // This also works for interfaces because they also have the type
+            // as the first struct field.
+            let klass = self as *const _ as *const gobject_ffi::GTypeInterface;
+            from_glib((*klass).g_instance_type)
+        }
+    }
+
+    /// Gets the interface struct for `Self` of `klass`.
+    ///
+    /// This will return `None` if `klass` is not implementing `Self`.
+    pub fn from_class<U: IsClass>(klass: &Class<U>) -> Option<InterfaceRef<T>> {
+        if !klass.get_type().is_a(T::static_type()) {
+            return None;
+        }
+
+        unsafe {
+            let ptr = gobject_ffi::g_type_interface_peek(
+                &klass.0 as *const _ as *mut _,
+                T::static_type().to_glib(),
+            );
+            if ptr.is_null() {
+                None
+            } else {
+                Some(InterfaceRef(
+                    ptr::NonNull::new_unchecked(ptr as *mut Self),
+                    false,
+                    PhantomData,
+                ))
+            }
+        }
+    }
+
+    /// Gets the default interface struct for `Self`.
+    pub fn default() -> InterfaceRef<'static, T> {
+        unsafe {
+            let ptr = gobject_ffi::g_type_default_interface_ref(T::static_type().to_glib());
+            assert!(!ptr.is_null());
+            InterfaceRef(
+                ptr::NonNull::new_unchecked(ptr as *mut Self),
+                true,
+                PhantomData,
+            )
+        }
+    }
+
+    /// Gets the parent interface struct, if any.
+    ///
+    /// This returns the parent interface if a parent type of the instance type also implements the
+    /// interface.
+    pub fn parent(&self) -> Option<InterfaceRef<T>> {
+        unsafe {
+            let ptr = gobject_ffi::g_type_interface_peek_parent(&self.0 as *const _ as *mut _);
+            if ptr.is_null() {
+                None
+            } else {
+                Some(InterfaceRef(
+                    ptr::NonNull::new_unchecked(ptr as *mut Self),
+                    false,
+                    PhantomData,
+                ))
+            }
+        }
+    }
+}
+
+unsafe impl<T: IsInterface> Send for Interface<T> {}
+unsafe impl<T: IsInterface> Sync for Interface<T> {}
+
+impl<T: IsInterface> AsRef<T::GlibClassType> for Interface<T> {
+    fn as_ref(&self) -> &T::GlibClassType {
+        &self.0
+    }
+}
+
+impl<T: IsInterface> AsMut<T::GlibClassType> for Interface<T> {
+    fn as_mut(&mut self) -> &mut T::GlibClassType {
+        &mut self.0
+    }
+}
+
+/// Reference to a class struct of type `T`.
+#[derive(Debug)]
+pub struct InterfaceRef<'a, T: IsInterface>(ptr::NonNull<Interface<T>>, bool, PhantomData<&'a ()>);
+
+impl<'a, T: IsInterface> Drop for InterfaceRef<'a, T> {
+    fn drop(&mut self) {
+        if self.1 {
+            unsafe {
+                gobject_ffi::g_type_default_interface_unref(self.0.as_ptr() as *mut _);
+            }
+        }
+    }
+}
+
+impl<'a, T: IsInterface> ops::Deref for InterfaceRef<'a, T> {
+    type Target = Interface<T>;
+
+    fn deref(&self) -> &Interface<T> {
+        unsafe { self.0.as_ref() }
+    }
+}
+
+unsafe impl<'a, T: IsInterface> Send for InterfaceRef<'a, T> {}
+unsafe impl<'a, T: IsInterface> Sync for InterfaceRef<'a, T> {}
+
+/// Trait implemented by interface types.
+pub unsafe trait IsInterface: ObjectType {}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn new() {
+        let obj: Object = Object::new(&[]).unwrap();
+        drop(obj);
+    }
+
+    #[test]
+    fn data() {
+        let obj: Object = Object::new(&[]).unwrap();
+        unsafe {
+            obj.set_data::<String>("foo", "hello".into());
+            let data = obj.get_data::<String>("foo").unwrap();
+            assert_eq!(data.as_ref(), "hello");
+            let data2 = obj.steal_data::<String>("foo").unwrap();
+            assert_eq!(data2, "hello");
         }
     }
 }

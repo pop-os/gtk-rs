@@ -1,5 +1,5 @@
 [options]
-girs_dir = "gir-files"
+girs_directories = ["../gir-files"]
 library = "Gtk"
 version = "3.0"
 min_cfg_version = "3.14"
@@ -2706,13 +2706,7 @@ manual_traits = ["WidgetExtManual"]
         name = "data"
         transformation = "borrow"
     [[object.signal]]
-    name = "drag-drop"
-    inhibit = true
-    [[object.signal]]
     name = "drag-failed"
-    inhibit = true
-    [[object.signal]]
-    name = "drag-motion"
     inhibit = true
     [[object.signal]]
     name = "draw"

@@ -1029,8 +1029,8 @@ impl<T: WidgetImpl> WidgetImplExt for T {
 }
 
 unsafe impl<T: WidgetImpl> IsSubclassable<T> for Widget {
-    fn override_vfuncs(class: &mut ::glib::Class<Self>) {
-        <Object as IsSubclassable<T>>::override_vfuncs(class);
+    fn class_init(class: &mut ::glib::Class<Self>) {
+        <Object as IsSubclassable<T>>::class_init(class);
 
         let klass = class.as_mut();
         klass.adjust_baseline_allocation = Some(widget_adjust_baseline_allocation::<T>);
@@ -1075,6 +1075,10 @@ unsafe impl<T: WidgetImpl> IsSubclassable<T> for Widget {
         klass.scroll_event = Some(widget_scroll_event::<T>);
         klass.enter_notify_event = Some(widget_enter_notify_event::<T>);
         klass.leave_notify_event = Some(widget_leave_notify_event::<T>);
+    }
+
+    fn instance_init(instance: &mut glib::subclass::InitializingObject<T>) {
+        <Object as IsSubclassable<T>>::instance_init(instance);
     }
 }
 
@@ -1704,9 +1708,9 @@ pub unsafe trait WidgetClassSubclassExt: ClassStruct {
         let widget_class =
             glib::gobject_ffi::g_type_check_class_cast(type_class, ffi::gtk_widget_get_type())
                 as *mut ffi::GtkWidgetClass;
-        let private_offset = <Self::Type as ObjectSubclass>::type_data()
+        let private_offset = <Self::Type as ObjectSubclassType>::type_data()
             .as_ref()
-            .private_offset;
+            .get_impl_offset();
         ffi::gtk_widget_class_bind_template_child_full(
             widget_class,
             name.to_glib_none().0,

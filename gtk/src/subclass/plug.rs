@@ -32,11 +32,15 @@ impl<T: PlugImpl> PlugImplExt for T {
 }
 
 unsafe impl<T: PlugImpl> IsSubclassable<T> for Plug {
-    fn override_vfuncs(class: &mut ::glib::Class<Self>) {
-        <Window as IsSubclassable<T>>::override_vfuncs(class);
+    fn class_init(class: &mut ::glib::Class<Self>) {
+        <Window as IsSubclassable<T>>::class_init(class);
 
         let klass = class.as_mut();
         klass.embedded = Some(plug_embedded::<T>);
+    }
+
+    fn instance_init(instance: &mut glib::subclass::InitializingObject<T>) {
+        <Window as IsSubclassable<T>>::instance_init(instance);
     }
 }
 

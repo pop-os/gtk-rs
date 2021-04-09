@@ -83,7 +83,12 @@ pub use gobject_ffi;
 #[doc(hidden)]
 pub use bitflags;
 
-pub use glib_macros::{clone, gflags, object_subclass, Downgrade, GBoxed, GEnum};
+#[doc(hidden)]
+pub use once_cell;
+
+pub use glib_macros::{
+    clone, gflags, object_interface, object_subclass, Downgrade, GBoxed, GEnum, GErrorDomain,
+};
 
 pub use self::byte_array::ByteArray;
 pub use self::bytes::Bytes;
@@ -91,7 +96,8 @@ pub use self::closure::Closure;
 pub use self::error::{BoolError, Error};
 pub use self::file_error::FileError;
 pub use self::object::{
-    Cast, Class, InitiallyUnowned, IsA, Object, ObjectExt, ObjectType, SendWeakRef, WeakRef,
+    Cast, Class, InitiallyUnowned, Interface, IsA, Object, ObjectExt, ObjectType, SendWeakRef,
+    WeakRef,
 };
 pub use self::signal::{
     signal_handler_block, signal_handler_disconnect, signal_handler_unblock,

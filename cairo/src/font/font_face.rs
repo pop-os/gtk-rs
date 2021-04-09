@@ -2,7 +2,6 @@
 
 #[cfg(feature = "use_glib")]
 use glib::translate::*;
-use libc::{c_char, c_int};
 use std::ffi::{CStr, CString};
 #[cfg(not(feature = "use_glib"))]
 use std::ptr;
@@ -31,6 +30,7 @@ glib::wrapper! {
 pub struct FontFace(ptr::NonNull<ffi::cairo_font_face_t>);
 
 impl FontFace {
+    #[doc(alias = "cairo_toy_font_face_create")]
     pub fn toy_create(family: &str, slant: FontSlant, weight: FontWeight) -> FontFace {
         let font_face: FontFace = unsafe {
             let family = CString::new(family).unwrap();
@@ -47,6 +47,7 @@ impl FontFace {
 
     // Safety: the FT_Face must be valid and not be freed until the `FontFace` is dropped.
     #[cfg(any(feature = "freetype", feature = "dox"))]
+    #[doc(alias = "cairo_ft_font_face_create_for_ft_face")]
     pub unsafe fn create_from_ft(face: freetype_crate::freetype::FT_Face) -> FontFace {
         let font_face = FontFace::from_raw_full(ffi::cairo_ft_font_face_create_for_ft_face(
             face as *mut _,
@@ -59,9 +60,10 @@ impl FontFace {
 
     // Safety: the FT_Face must be valid and not be freed until the `FontFace` is dropped.
     #[cfg(any(feature = "freetype", feature = "dox"))]
+    #[doc(alias = "cairo_ft_font_face_create_for_ft_face")]
     pub unsafe fn create_from_ft_with_flags(
         face: freetype_crate::freetype::FT_Face,
-        load_flags: c_int,
+        load_flags: libc::c_int,
     ) -> FontFace {
         let font_face = FontFace::from_raw_full(ffi::cairo_ft_font_face_create_for_ft_face(
             face as *mut _,
@@ -104,37 +106,45 @@ impl FontFace {
         self.0.as_ptr()
     }
 
+    #[doc(alias = "cairo_toy_font_face_get_family")]
     pub fn toy_get_family(&self) -> Option<String> {
         unsafe { to_optional_string(ffi::cairo_toy_font_face_get_family(self.to_raw_none())) }
     }
 
+    #[doc(alias = "cairo_toy_font_face_get_slant")]
     pub fn toy_get_slant(&self) -> FontSlant {
         unsafe { FontSlant::from(ffi::cairo_toy_font_face_get_slant(self.to_raw_none())) }
     }
 
+    #[doc(alias = "cairo_toy_font_face_get_weight")]
     pub fn toy_get_weight(&self) -> FontWeight {
         unsafe { FontWeight::from(ffi::cairo_toy_font_face_get_weight(self.to_raw_none())) }
     }
 
+    #[doc(alias = "cairo_font_face_get_type")]
     pub fn get_type(&self) -> FontType {
         unsafe { FontType::from(ffi::cairo_font_face_get_type(self.to_raw_none())) }
     }
 
+    #[doc(alias = "cairo_font_face_get_reference_count")]
     pub fn get_reference_count(&self) -> usize {
         unsafe { ffi::cairo_font_face_get_reference_count(self.to_raw_none()) as usize }
     }
 
+    #[doc(alias = "cairo_ft_font_face_get_synthesize")]
     #[cfg(any(feature = "freetype", feature = "dox"))]
     pub fn get_synthesize(&self) -> FtSynthesize {
         unsafe { FtSynthesize::from(ffi::cairo_ft_font_face_get_synthesize(self.to_raw_none())) }
     }
 
     #[cfg(any(feature = "freetype", feature = "dox"))]
+    #[doc(alias = "cairo_ft_font_face_set_synthesize")]
     pub fn set_synthesize(&self, synth_flags: FtSynthesize) {
         unsafe { ffi::cairo_ft_font_face_set_synthesize(self.to_raw_none(), synth_flags.into()) }
     }
 
     #[cfg(any(feature = "freetype", feature = "dox"))]
+    #[doc(alias = "cairo_ft_font_face_unset_synthesize")]
     pub fn unset_synthesize(&self, synth_flags: FtSynthesize) {
         unsafe { ffi::cairo_ft_font_face_unset_synthesize(self.to_raw_none(), synth_flags.into()) }
     }
@@ -161,7 +171,7 @@ impl Clone for FontFace {
     }
 }
 
-pub(crate) unsafe fn to_optional_string(str: *const c_char) -> Option<String> {
+pub(crate) unsafe fn to_optional_string(str: *const libc::c_char) -> Option<String> {
     if str.is_null() {
         None
     } else {

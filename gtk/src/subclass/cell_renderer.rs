@@ -421,8 +421,8 @@ impl<T: CellRendererImpl> CellRendererImplExt for T {
 }
 
 unsafe impl<T: CellRendererImpl> IsSubclassable<T> for CellRenderer {
-    fn override_vfuncs(class: &mut ::glib::Class<Self>) {
-        <Object as IsSubclassable<T>>::override_vfuncs(class);
+    fn class_init(class: &mut ::glib::Class<Self>) {
+        <Object as IsSubclassable<T>>::class_init(class);
 
         let klass = class.as_mut();
         klass.get_request_mode = Some(cell_renderer_get_request_mode::<T>);
@@ -438,6 +438,10 @@ unsafe impl<T: CellRendererImpl> IsSubclassable<T> for CellRenderer {
         klass.start_editing = Some(cell_renderer_start_editing::<T>);
         klass.editing_started = Some(cell_renderer_editing_started::<T>);
         klass.editing_canceled = Some(cell_renderer_editing_canceled::<T>);
+    }
+
+    fn instance_init(instance: &mut glib::subclass::InitializingObject<T>) {
+        <Object as IsSubclassable<T>>::instance_init(instance);
     }
 }
 

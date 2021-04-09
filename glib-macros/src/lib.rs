@@ -4,7 +4,9 @@ mod clone;
 mod downgrade_derive;
 mod gboxed_derive;
 mod genum_derive;
+mod gerror_domain_derive;
 mod gflags_attribute;
+mod object_interface_attribute;
 mod object_subclass_attribute;
 mod utils;
 
@@ -134,7 +136,7 @@ use syn::{parse_macro_input, DeriveInput, LitStr};
 ///
 /// Or by using `@default-panic` (if the value fails to get upgraded, it'll panic):
 ///
-/// ```run_fail
+/// ```should_panic
 /// # use glib_macros::clone;
 /// # use std::rc::Rc;
 /// # let v = Rc::new(1);
@@ -248,6 +250,32 @@ pub fn genum_derive(input: TokenStream) -> TokenStream {
     gen.into()
 }
 
+/// Derive macro for defining a GLib error domain and its associated
+/// [`ErrorDomain`] trait.
+///
+/// # Example
+///
+/// ```
+/// use glib::prelude::*;
+/// use glib::subclass::prelude::*;
+///
+/// #[derive(Debug, Copy, Clone, glib::GErrorDomain)]
+/// #[gerror_domain(name = "ExFoo")]
+/// enum Foo {
+///     Blah,
+///     Baaz,
+/// }
+/// ```
+///
+/// [`ErrorDomain`]: error/trait.ErrorDomain.html
+#[proc_macro_derive(GErrorDomain, attributes(gerror_domain))]
+#[proc_macro_error]
+pub fn gerror_domain_derive(input: TokenStream) -> TokenStream {
+    let input = parse_macro_input!(input as DeriveInput);
+    let gen = gerror_domain_derive::impl_gerror_domain(&input);
+    gen.into()
+}
+
 /// Derive macro for defining a [`BoxedType`]`::get_type` function and
 /// the [`glib::Value`] traits.
 ///
@@ -347,6 +375,31 @@ pub fn object_subclass(_attr: TokenStream, item: TokenStream) -> TokenStream {
     match syn::parse::<syn::ItemImpl>(item) {
         Ok(input) => object_subclass_attribute::impl_object_subclass(&input).into(),
         Err(_) => abort_call_site!(object_subclass_attribute::WRONG_PLACE_MSG),
+    }
+}
+
+/// Macro for boilerplate of [`ObjectInterface`] implementations.
+///
+/// This adds implementations for the `get_type()` method, which should probably never be defined
+/// differently.
+///
+/// It provides default values for the `Prerequisites` type parameter. If this present, the macro
+/// will use the provided value instead of the default.
+///
+/// `Prerequisites` is interfaces for types that require a specific base class or interfaces.
+///
+/// ```ignore
+/// type Prerequisites = ();
+/// ```
+///
+/// [`ObjectInterface`]: interface/types/trait.ObjectInterface.html
+#[proc_macro_attribute]
+#[proc_macro_error]
+pub fn object_interface(_attr: TokenStream, item: TokenStream) -> TokenStream {
+    use proc_macro_error::abort_call_site;
+    match syn::parse::<syn::ItemImpl>(item) {
+        Ok(input) => object_interface_attribute::impl_object_interface(&input).into(),
+        Err(_) => abort_call_site!(object_interface_attribute::WRONG_PLACE_MSG),
     }
 }
 

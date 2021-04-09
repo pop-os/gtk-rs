@@ -144,8 +144,8 @@ impl<T: IconViewImpl> IconViewImplExt for T {
 }
 
 unsafe impl<T: IconViewImpl> IsSubclassable<T> for IconView {
-    fn override_vfuncs(class: &mut ::glib::Class<Self>) {
-        <Container as IsSubclassable<T>>::override_vfuncs(class);
+    fn class_init(class: &mut ::glib::Class<Self>) {
+        <Container as IsSubclassable<T>>::class_init(class);
 
         let klass = class.as_mut();
         klass.item_activated = Some(icon_view_item_activated::<T>);
@@ -156,6 +156,10 @@ unsafe impl<T: IconViewImpl> IsSubclassable<T> for IconView {
         klass.toggle_cursor_item = Some(icon_view_toggle_cursor_item::<T>);
         klass.move_cursor = Some(icon_view_move_cursor::<T>);
         klass.activate_cursor_item = Some(icon_view_activate_cursor_item::<T>);
+    }
+
+    fn instance_init(instance: &mut glib::subclass::InitializingObject<T>) {
+        <Container as IsSubclassable<T>>::instance_init(instance);
     }
 }
 

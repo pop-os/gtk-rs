@@ -146,13 +146,17 @@ impl<T: InputStreamImpl> InputStreamImplExt for T {
 }
 
 unsafe impl<T: InputStreamImpl> IsSubclassable<T> for InputStream {
-    fn override_vfuncs(class: &mut ::glib::Class<Self>) {
-        <glib::Object as IsSubclassable<T>>::override_vfuncs(class);
+    fn class_init(class: &mut ::glib::Class<Self>) {
+        <glib::Object as IsSubclassable<T>>::class_init(class);
 
         let klass = class.as_mut();
         klass.read_fn = Some(stream_read::<T>);
         klass.close_fn = Some(stream_close::<T>);
         klass.skip = Some(stream_skip::<T>);
+    }
+
+    fn instance_init(instance: &mut glib::subclass::InitializingObject<T>) {
+        <glib::Object as IsSubclassable<T>>::instance_init(instance);
     }
 }
 

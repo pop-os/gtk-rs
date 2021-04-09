@@ -36,13 +36,17 @@
 //!     }
 //! }
 //!
+//! // Note that the first `#[glib::gflags(...)]` is the proc-macro invocation,
+//! // while the plain `#[gflags(...)]` inside the braces are just custom attributes that
+//! // get read by the proc-macro, and they must be written exactly like that.
+//!
 //! #[glib::gflags("MyFlags")]
 //! enum MyFlags {
-//!     #[glib::gflags(name = "Flag A", nick = "nick-a")]
+//!     #[gflags(name = "Flag A", nick = "nick-a")]
 //!     A = 0b00000001,
-//!     #[glib::gflags(name = "Flag B")]
+//!     #[gflags(name = "Flag B")]
 //!     B = 0b00000010,
-//!     #[glib::gflags(skip)]
+//!     #[gflags(skip)]
 //!     AB = Self::A.bits() | Self::B.bits(),
 //!     C = 0b00000100,
 //! }
@@ -232,7 +236,7 @@
 //! }
 //! ```
 
-pub mod simple;
+pub mod basic;
 #[macro_use]
 pub mod types;
 
@@ -250,10 +254,11 @@ pub mod signal;
 pub mod prelude {
     //! Prelude that re-exports all important traits from this crate.
     pub use super::boxed::BoxedType;
-    pub use super::interface::{ObjectInterface, ObjectInterfaceExt};
+    pub use super::interface::{ObjectInterface, ObjectInterfaceExt, ObjectInterfaceType};
     pub use super::object::{ObjectClassSubclassExt, ObjectImpl, ObjectImplExt};
     pub use super::types::{
         ClassStruct, InstanceStruct, IsImplementable, IsSubclassable, ObjectSubclass,
+        ObjectSubclassExt, ObjectSubclassType,
     };
 }
 

@@ -2,32 +2,18 @@
 // from gir-files (https://github.com/gtk-rs/gir-files)
 // DO NOT EDIT
 
-#[cfg(any(feature = "v2_64", feature = "dox"))]
-#[cfg_attr(feature = "dox", doc(cfg(feature = "v2_64")))]
 use crate::MemoryMonitorWarningLevel;
-#[cfg(any(feature = "v2_64", feature = "dox"))]
-#[cfg_attr(feature = "dox", doc(cfg(feature = "v2_64")))]
 use glib::object::Cast;
 use glib::object::IsA;
-#[cfg(any(feature = "v2_64", feature = "dox"))]
-#[cfg_attr(feature = "dox", doc(cfg(feature = "v2_64")))]
 use glib::signal::connect_raw;
-#[cfg(any(feature = "v2_64", feature = "dox"))]
-#[cfg_attr(feature = "dox", doc(cfg(feature = "v2_64")))]
 use glib::signal::SignalHandlerId;
-#[cfg(any(feature = "v2_64", feature = "dox"))]
-#[cfg_attr(feature = "dox", doc(cfg(feature = "v2_64")))]
 use glib::translate::*;
-#[cfg(any(feature = "v2_64", feature = "dox"))]
-#[cfg_attr(feature = "dox", doc(cfg(feature = "v2_64")))]
 use std::boxed::Box as Box_;
 use std::fmt;
-#[cfg(any(feature = "v2_64", feature = "dox"))]
-#[cfg_attr(feature = "dox", doc(cfg(feature = "v2_64")))]
 use std::mem::transmute;
 
 glib::wrapper! {
-    pub struct MemoryMonitor(Interface<ffi::GMemoryMonitor>);
+    pub struct MemoryMonitor(Interface<ffi::GMemoryMonitor, ffi::GMemoryMonitorInterface>);
 
     match fn {
         get_type => || ffi::g_memory_monitor_get_type(),
@@ -35,10 +21,8 @@ glib::wrapper! {
 }
 
 impl MemoryMonitor {
-    #[cfg(any(feature = "v2_64", feature = "dox"))]
-    #[cfg_attr(feature = "dox", doc(cfg(feature = "v2_64")))]
     #[doc(alias = "g_memory_monitor_dup_default")]
-    pub fn dup_default() -> Option<MemoryMonitor> {
+    pub fn dup_default() -> MemoryMonitor {
         unsafe { from_glib_full(ffi::g_memory_monitor_dup_default()) }
     }
 }

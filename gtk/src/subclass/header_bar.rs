@@ -9,7 +9,11 @@ use crate::HeaderBar;
 pub trait HeaderBarImpl: ContainerImpl {}
 
 unsafe impl<T: HeaderBarImpl> IsSubclassable<T> for HeaderBar {
-    fn override_vfuncs(class: &mut ::glib::Class<Self>) {
-        <Container as IsSubclassable<T>>::override_vfuncs(class);
+    fn class_init(class: &mut ::glib::Class<Self>) {
+        <Container as IsSubclassable<T>>::class_init(class);
+    }
+
+    fn instance_init(instance: &mut glib::subclass::InitializingObject<T>) {
+        <Container as IsSubclassable<T>>::instance_init(instance);
     }
 }

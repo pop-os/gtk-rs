@@ -12,7 +12,7 @@ use std::pin::Pin;
 use std::ptr;
 
 glib::wrapper! {
-    pub struct ProxyResolver(Interface<ffi::GProxyResolver>);
+    pub struct ProxyResolver(Interface<ffi::GProxyResolver, ffi::GProxyResolverInterface>);
 
     match fn {
         get_type => || ffi::g_proxy_resolver_get_type(),
@@ -21,7 +21,7 @@ glib::wrapper! {
 
 impl ProxyResolver {
     #[doc(alias = "g_proxy_resolver_get_default")]
-    pub fn get_default() -> Option<ProxyResolver> {
+    pub fn get_default() -> ProxyResolver {
         unsafe { from_glib_none(ffi::g_proxy_resolver_get_default()) }
     }
 }

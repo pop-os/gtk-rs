@@ -41,11 +41,15 @@ impl<T: CellRendererTextImpl> CellRendererTextImplExt for T {
 }
 
 unsafe impl<T: CellRendererTextImpl> IsSubclassable<T> for CellRendererText {
-    fn override_vfuncs(class: &mut ::glib::Class<Self>) {
-        <CellRenderer as IsSubclassable<T>>::override_vfuncs(class);
+    fn class_init(class: &mut ::glib::Class<Self>) {
+        <CellRenderer as IsSubclassable<T>>::class_init(class);
 
         let klass = class.as_mut();
         klass.edited = Some(cell_renderer_text_edited::<T>);
+    }
+
+    fn instance_init(instance: &mut glib::subclass::InitializingObject<T>) {
+        <CellRenderer as IsSubclassable<T>>::instance_init(instance);
     }
 }
 
