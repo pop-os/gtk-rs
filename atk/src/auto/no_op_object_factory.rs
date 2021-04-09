@@ -16,7 +16,6 @@ glib::wrapper! {
 }
 
 impl NoOpObjectFactory {
-    #[doc(alias = "atk_no_op_object_factory_new")]
     pub fn new() -> NoOpObjectFactory {
         assert_initialized_main_thread!();
         unsafe { ObjectFactory::from_glib_full(ffi::atk_no_op_object_factory_new()).unsafe_cast() }

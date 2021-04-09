@@ -17,7 +17,6 @@ glib::wrapper! {
 pub const NONE_FONT: Option<&Font> = None;
 
 pub trait FontExt: 'static {
-    #[doc(alias = "pango_cairo_font_get_scaled_font")]
     fn get_scaled_font(&self) -> Option<cairo::ScaledFont>;
 }
 

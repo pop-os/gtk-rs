@@ -8,7 +8,6 @@ use crate::Vec4;
 use glib::translate::*;
 
 impl Quaternion {
-    #[doc(alias = "graphene_quaternion_init")]
     pub fn new(x: f32, y: f32, z: f32, w: f32) -> Quaternion {
         assert_initialized_main_thread!();
         unsafe {
@@ -18,7 +17,6 @@ impl Quaternion {
         }
     }
 
-    #[doc(alias = "graphene_quaternion_init_from_angle_vec3")]
     pub fn new_from_angle_vec3(angle: f32, axis: &Vec3) -> Quaternion {
         assert_initialized_main_thread!();
         unsafe {
@@ -28,7 +26,6 @@ impl Quaternion {
         }
     }
 
-    #[doc(alias = "graphene_quaternion_init_from_angles")]
     pub fn new_from_angles(deg_x: f32, deg_y: f32, deg_z: f32) -> Quaternion {
         assert_initialized_main_thread!();
         unsafe {
@@ -38,7 +35,6 @@ impl Quaternion {
         }
     }
 
-    #[doc(alias = "graphene_quaternion_init_from_euler")]
     pub fn new_from_euler(e: &Euler) -> Quaternion {
         assert_initialized_main_thread!();
         unsafe {
@@ -48,7 +44,6 @@ impl Quaternion {
         }
     }
 
-    #[doc(alias = "graphene_quaternion_init_from_matrix")]
     pub fn new_from_matrix(m: &Matrix) -> Quaternion {
         assert_initialized_main_thread!();
         unsafe {
@@ -58,7 +53,6 @@ impl Quaternion {
         }
     }
 
-    #[doc(alias = "graphene_quaternion_init_from_quaternion")]
     pub fn new_from_quaternion(src: &Quaternion) -> Quaternion {
         assert_initialized_main_thread!();
         unsafe {
@@ -68,7 +62,6 @@ impl Quaternion {
         }
     }
 
-    #[doc(alias = "graphene_quaternion_init_from_radians")]
     pub fn new_from_radians(rad_x: f32, rad_y: f32, rad_z: f32) -> Quaternion {
         assert_initialized_main_thread!();
         unsafe {
@@ -78,7 +71,6 @@ impl Quaternion {
         }
     }
 
-    #[doc(alias = "graphene_quaternion_init_from_vec4")]
     pub fn new_from_vec4(src: &Vec4) -> Quaternion {
         assert_initialized_main_thread!();
         unsafe {
@@ -88,7 +80,6 @@ impl Quaternion {
         }
     }
 
-    #[doc(alias = "graphene_quaternion_init_identity")]
     pub fn new_identity() -> Quaternion {
         assert_initialized_main_thread!();
         unsafe {

@@ -22,7 +22,6 @@ glib::wrapper! {
 }
 
 impl ConverterOutputStream {
-    #[doc(alias = "g_converter_output_stream_new")]
     pub fn new<P: IsA<OutputStream>, Q: IsA<Converter>>(
         base_stream: &P,
         converter: &Q,
@@ -83,7 +82,6 @@ impl ConverterOutputStreamBuilder {
 pub const NONE_CONVERTER_OUTPUT_STREAM: Option<&ConverterOutputStream> = None;
 
 pub trait ConverterOutputStreamExt: 'static {
-    #[doc(alias = "g_converter_output_stream_get_converter")]
     fn get_converter(&self) -> Converter;
 }
 

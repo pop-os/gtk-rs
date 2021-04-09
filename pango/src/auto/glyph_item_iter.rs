@@ -17,7 +17,6 @@ glib::wrapper! {
 }
 
 impl GlyphItemIter {
-    #[doc(alias = "pango_glyph_item_iter_init_end")]
     pub fn init_end(&mut self, glyph_item: &mut GlyphItem, text: &str) -> bool {
         unsafe {
             from_glib(ffi::pango_glyph_item_iter_init_end(
@@ -28,7 +27,6 @@ impl GlyphItemIter {
         }
     }
 
-    #[doc(alias = "pango_glyph_item_iter_init_start")]
     pub fn init_start(&mut self, glyph_item: &mut GlyphItem, text: &str) -> bool {
         unsafe {
             from_glib(ffi::pango_glyph_item_iter_init_start(
@@ -39,7 +37,6 @@ impl GlyphItemIter {
         }
     }
 
-    #[doc(alias = "pango_glyph_item_iter_next_cluster")]
     pub fn next_cluster(&mut self) -> bool {
         unsafe {
             from_glib(ffi::pango_glyph_item_iter_next_cluster(
@@ -48,7 +45,6 @@ impl GlyphItemIter {
         }
     }
 
-    #[doc(alias = "pango_glyph_item_iter_prev_cluster")]
     pub fn prev_cluster(&mut self) -> bool {
         unsafe {
             from_glib(ffi::pango_glyph_item_iter_prev_cluster(

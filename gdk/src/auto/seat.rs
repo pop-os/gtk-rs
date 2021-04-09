@@ -29,27 +29,22 @@ glib::wrapper! {
 }
 
 impl Seat {
-    #[doc(alias = "gdk_seat_get_capabilities")]
     pub fn get_capabilities(&self) -> SeatCapabilities {
         unsafe { from_glib(ffi::gdk_seat_get_capabilities(self.to_glib_none().0)) }
     }
 
-    #[doc(alias = "gdk_seat_get_display")]
     pub fn get_display(&self) -> Option<Display> {
         unsafe { from_glib_none(ffi::gdk_seat_get_display(self.to_glib_none().0)) }
     }
 
-    #[doc(alias = "gdk_seat_get_keyboard")]
     pub fn get_keyboard(&self) -> Option<Device> {
         unsafe { from_glib_none(ffi::gdk_seat_get_keyboard(self.to_glib_none().0)) }
     }
 
-    #[doc(alias = "gdk_seat_get_pointer")]
     pub fn get_pointer(&self) -> Option<Device> {
         unsafe { from_glib_none(ffi::gdk_seat_get_pointer(self.to_glib_none().0)) }
     }
 
-    #[doc(alias = "gdk_seat_get_slaves")]
     pub fn get_slaves(&self, capabilities: SeatCapabilities) -> Vec<Device> {
         unsafe {
             FromGlibPtrContainer::from_glib_container(ffi::gdk_seat_get_slaves(
@@ -59,7 +54,6 @@ impl Seat {
         }
     }
 
-    #[doc(alias = "gdk_seat_grab")]
     pub fn grab(
         &self,
         window: &Window,
@@ -105,7 +99,6 @@ impl Seat {
         }
     }
 
-    #[doc(alias = "gdk_seat_ungrab")]
     pub fn ungrab(&self) {
         unsafe {
             ffi::gdk_seat_ungrab(self.to_glib_none().0);

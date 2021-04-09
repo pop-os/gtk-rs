@@ -6,7 +6,6 @@ use libc::size_t;
 use std::vec::Vec;
 
 impl Checksum {
-    #[doc(alias = "g_checksum_get_digest")]
     pub fn get_digest(self) -> Vec<u8> {
         unsafe {
             //Don't forget update when `ChecksumType` contains type bigger that Sha512.
@@ -24,7 +23,6 @@ impl Checksum {
         }
     }
 
-    #[doc(alias = "g_checksum_get_string")]
     pub fn get_string(self) -> Option<String> {
         unsafe {
             from_glib_none(ffi::g_checksum_get_string(mut_override(

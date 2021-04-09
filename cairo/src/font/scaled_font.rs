@@ -29,7 +29,6 @@ glib::wrapper! {
 pub struct ScaledFont(ptr::NonNull<ffi::cairo_scaled_font_t>);
 
 impl ScaledFont {
-    #[doc(alias = "cairo_scaled_font_create")]
     pub fn new(
         font_face: &FontFace,
         font_matrix: &Matrix,
@@ -82,17 +81,14 @@ impl ScaledFont {
         ScaledFont(ptr::NonNull::new_unchecked(ptr))
     }
 
-    #[doc(alias = "cairo_scaled_font_get_type")]
     pub fn get_type(&self) -> FontType {
         unsafe { FontType::from(ffi::cairo_scaled_font_get_type(self.to_raw_none())) }
     }
 
-    #[doc(alias = "cairo_scaled_font_get_reference_count")]
     pub fn get_reference_count(&self) -> usize {
         unsafe { ffi::cairo_scaled_font_get_reference_count(self.to_raw_none()) as usize }
     }
 
-    #[doc(alias = "cairo_scaled_font_extents")]
     pub fn extents(&self) -> FontExtents {
         let mut extents = FontExtents {
             ascent: 0.0,
@@ -107,7 +103,6 @@ impl ScaledFont {
         extents
     }
 
-    #[doc(alias = "cairo_scaled_font_text_extents")]
     pub fn text_extents(&self, text: &str) -> TextExtents {
         let mut extents = TextExtents {
             x_bearing: 0.0,
@@ -126,7 +121,6 @@ impl ScaledFont {
         extents
     }
 
-    #[doc(alias = "cairo_scaled_font_glyph_extents")]
     pub fn glyph_extents(&self, glyphs: &[Glyph]) -> TextExtents {
         let mut extents = TextExtents {
             x_bearing: 0.0,
@@ -149,7 +143,6 @@ impl ScaledFont {
         extents
     }
 
-    #[doc(alias = "cairo_scaled_font_text_to_glyphs")]
     pub fn text_to_glyphs(&self, x: f64, y: f64, text: &str) -> (Vec<Glyph>, Vec<TextCluster>) {
         // This large unsafe block is due to the FFI function returning two specially allocated
         // (cairo_{glyph,text_cluster}_allocate) pointers that need to be copied into Vec<T>
@@ -205,12 +198,10 @@ impl ScaledFont {
         }
     }
 
-    #[doc(alias = "cairo_scaled_font_get_font_face")]
     pub fn get_font_face(&self) -> FontFace {
         unsafe { FontFace::from_raw_none(ffi::cairo_scaled_font_get_font_face(self.to_raw_none())) }
     }
 
-    #[doc(alias = "cairo_scaled_font_get_font_options")]
     pub fn get_font_options(&self) -> FontOptions {
         let options = FontOptions::new();
 
@@ -221,7 +212,6 @@ impl ScaledFont {
         options
     }
 
-    #[doc(alias = "cairo_scaled_font_get_font_matrix")]
     pub fn get_font_matrix(&self) -> Matrix {
         let mut matrix = Matrix::null();
 
@@ -230,7 +220,6 @@ impl ScaledFont {
         matrix
     }
 
-    #[doc(alias = "cairo_scaled_font_get_ctm")]
     pub fn get_ctm(&self) -> Matrix {
         let mut matrix = Matrix::null();
 
@@ -239,7 +228,6 @@ impl ScaledFont {
         matrix
     }
 
-    #[doc(alias = "cairo_scaled_font_get_scale_matrix")]
     pub fn get_scale_matrix(&self) -> Matrix {
         let mut matrix = Matrix::null();
 

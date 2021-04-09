@@ -34,13 +34,11 @@ glib::wrapper! {
 }
 
 impl PopoverMenu {
-    #[doc(alias = "gtk_popover_menu_new")]
     pub fn new() -> PopoverMenu {
         assert_initialized_main_thread!();
         unsafe { Widget::from_glib_none(ffi::gtk_popover_menu_new()).unsafe_cast() }
     }
 
-    #[doc(alias = "gtk_popover_menu_open_submenu")]
     pub fn open_submenu(&self, name: &str) {
         unsafe {
             ffi::gtk_popover_menu_open_submenu(self.to_glib_none().0, name.to_glib_none().0);

@@ -17,12 +17,10 @@ glib::wrapper! {
 }
 
 impl Emblem {
-    #[doc(alias = "g_emblem_new")]
     pub fn new<P: IsA<Icon>>(icon: &P) -> Emblem {
         unsafe { from_glib_full(ffi::g_emblem_new(icon.as_ref().to_glib_none().0)) }
     }
 
-    #[doc(alias = "g_emblem_new_with_origin")]
     pub fn with_origin<P: IsA<Icon>>(icon: &P, origin: EmblemOrigin) -> Emblem {
         unsafe {
             from_glib_full(ffi::g_emblem_new_with_origin(
@@ -32,12 +30,10 @@ impl Emblem {
         }
     }
 
-    #[doc(alias = "g_emblem_get_icon")]
     pub fn get_icon(&self) -> Icon {
         unsafe { from_glib_none(ffi::g_emblem_get_icon(self.to_glib_none().0)) }
     }
 
-    #[doc(alias = "g_emblem_get_origin")]
     pub fn get_origin(&self) -> EmblemOrigin {
         unsafe { from_glib(ffi::g_emblem_get_origin(self.to_glib_none().0)) }
     }

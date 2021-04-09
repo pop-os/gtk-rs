@@ -48,7 +48,6 @@ impl LayoutLine {
         unsafe { (*self.to_glib_none().0).length }
     }
 
-    #[doc(alias = "pango_layout_line_x_to_index")]
     pub fn x_to_index(&self, x_pos: i32) -> HitPosition {
         let mut index = 0;
         let mut trailing = 0;

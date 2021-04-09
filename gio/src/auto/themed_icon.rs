@@ -21,12 +21,10 @@ glib::wrapper! {
 }
 
 impl ThemedIcon {
-    #[doc(alias = "g_themed_icon_new")]
     pub fn new(iconname: &str) -> ThemedIcon {
         unsafe { from_glib_full(ffi::g_themed_icon_new(iconname.to_glib_none().0)) }
     }
 
-    #[doc(alias = "g_themed_icon_new_from_names")]
     pub fn from_names(iconnames: &[&str]) -> ThemedIcon {
         let len = iconnames.len() as i32;
         unsafe {
@@ -37,7 +35,6 @@ impl ThemedIcon {
         }
     }
 
-    #[doc(alias = "g_themed_icon_new_with_default_fallbacks")]
     pub fn with_default_fallbacks(iconname: &str) -> ThemedIcon {
         unsafe {
             from_glib_full(ffi::g_themed_icon_new_with_default_fallbacks(
@@ -46,14 +43,12 @@ impl ThemedIcon {
         }
     }
 
-    #[doc(alias = "g_themed_icon_append_name")]
     pub fn append_name(&self, iconname: &str) {
         unsafe {
             ffi::g_themed_icon_append_name(self.to_glib_none().0, iconname.to_glib_none().0);
         }
     }
 
-    #[doc(alias = "g_themed_icon_get_names")]
     pub fn get_names(&self) -> Vec<glib::GString> {
         unsafe {
             FromGlibPtrContainer::from_glib_none(ffi::g_themed_icon_get_names(
@@ -62,7 +57,6 @@ impl ThemedIcon {
         }
     }
 
-    #[doc(alias = "g_themed_icon_prepend_name")]
     pub fn prepend_name(&self, iconname: &str) {
         unsafe {
             ffi::g_themed_icon_prepend_name(self.to_glib_none().0, iconname.to_glib_none().0);

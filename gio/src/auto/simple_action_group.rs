@@ -16,7 +16,6 @@ glib::wrapper! {
 }
 
 impl SimpleActionGroup {
-    #[doc(alias = "g_simple_action_group_new")]
     pub fn new() -> SimpleActionGroup {
         unsafe { from_glib_full(ffi::g_simple_action_group_new()) }
     }

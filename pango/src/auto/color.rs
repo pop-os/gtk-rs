@@ -20,7 +20,6 @@ glib::wrapper! {
 }
 
 impl Color {
-    #[doc(alias = "pango_color_parse")]
     pub fn parse(&mut self, spec: &str) -> bool {
         unsafe {
             from_glib(ffi::pango_color_parse(
@@ -32,7 +31,6 @@ impl Color {
 
     #[cfg(any(feature = "v1_46", feature = "dox"))]
     #[cfg_attr(feature = "dox", doc(cfg(feature = "v1_46")))]
-    #[doc(alias = "pango_color_parse_with_alpha")]
     pub fn parse_with_alpha(&mut self, spec: &str) -> Option<u16> {
         unsafe {
             let mut alpha = mem::MaybeUninit::uninit();
@@ -50,7 +48,6 @@ impl Color {
         }
     }
 
-    #[doc(alias = "pango_color_to_string")]
     pub fn to_str(&self) -> glib::GString {
         unsafe { from_glib_full(ffi::pango_color_to_string(self.to_glib_none().0)) }
     }

@@ -79,7 +79,6 @@ unsafe extern "C" fn write_func<W: Write>(
 }
 
 impl ImageSurface {
-    #[doc(alias = "cairo_image_surface_create_from_png_stream")]
     pub fn create_from_png<R: Read>(stream: &mut R) -> Result<ImageSurface, IoError> {
         let mut env = ReadEnv {
             reader: stream,
@@ -105,7 +104,6 @@ impl ImageSurface {
         }
     }
 
-    #[doc(alias = "cairo_surface_write_to_png_stream")]
     pub fn write_to_png<W: Write>(&self, stream: &mut W) -> Result<(), IoError> {
         let mut env = WriteEnv {
             writer: stream,

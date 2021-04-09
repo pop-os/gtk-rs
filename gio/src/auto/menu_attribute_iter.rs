@@ -25,16 +25,12 @@ impl fmt::Display for MenuAttributeIter {
 pub const NONE_MENU_ATTRIBUTE_ITER: Option<&MenuAttributeIter> = None;
 
 pub trait MenuAttributeIterExt: 'static {
-    #[doc(alias = "g_menu_attribute_iter_get_name")]
     fn get_name(&self) -> glib::GString;
 
-    #[doc(alias = "g_menu_attribute_iter_get_next")]
     fn get_next(&self) -> Option<(glib::GString, glib::Variant)>;
 
-    #[doc(alias = "g_menu_attribute_iter_get_value")]
     fn get_value(&self) -> glib::Variant;
 
-    #[doc(alias = "g_menu_attribute_iter_next")]
     fn next(&self) -> bool;
 }
 

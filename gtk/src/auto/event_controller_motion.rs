@@ -23,7 +23,6 @@ glib::wrapper! {
 }
 
 impl EventControllerMotion {
-    #[doc(alias = "gtk_event_controller_motion_new")]
     pub fn new<P: IsA<Widget>>(widget: &P) -> EventControllerMotion {
         skip_assert_initialized!();
         unsafe {

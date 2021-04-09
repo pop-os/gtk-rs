@@ -34,7 +34,6 @@ glib::wrapper! {
 }
 
 impl ColorChooserDialog {
-    #[doc(alias = "gtk_color_chooser_dialog_new")]
     pub fn new<P: IsA<Window>>(title: Option<&str>, parent: Option<&P>) -> ColorChooserDialog {
         assert_initialized_main_thread!();
         unsafe {

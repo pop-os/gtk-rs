@@ -24,7 +24,6 @@ glib::wrapper! {
 }
 
 impl PropertyAction {
-    #[doc(alias = "g_property_action_new")]
     pub fn new<P: IsA<glib::Object>>(
         name: &str,
         object: &P,

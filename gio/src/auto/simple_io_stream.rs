@@ -19,7 +19,6 @@ glib::wrapper! {
 }
 
 impl SimpleIOStream {
-    #[doc(alias = "g_simple_io_stream_new")]
     pub fn new<P: IsA<InputStream>, Q: IsA<OutputStream>>(
         input_stream: &P,
         output_stream: &Q,

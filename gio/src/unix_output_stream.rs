@@ -12,14 +12,12 @@ use std::os::unix::io::{AsRawFd, FromRawFd, IntoRawFd, RawFd};
 use socket::{AsRawFd, FromRawFd, IntoRawFd, RawFd};
 
 impl UnixOutputStream {
-    #[doc(alias = "g_unix_output_stream_new")]
     pub unsafe fn take_fd<T: IntoRawFd>(fd: T) -> UnixOutputStream {
         let fd = fd.into_raw_fd();
         let close_fd = true.to_glib();
         OutputStream::from_glib_full(ffi::g_unix_output_stream_new(fd, close_fd)).unsafe_cast()
     }
 
-    #[doc(alias = "g_unix_output_stream_new")]
     pub unsafe fn with_fd<T: AsRawFd>(fd: T) -> UnixOutputStream {
         let fd = fd.as_raw_fd();
         let close_fd = false.to_glib();
@@ -34,10 +32,8 @@ impl AsRawFd for UnixOutputStream {
 }
 
 pub trait UnixOutputStreamExtManual: Sized {
-    #[doc(alias = "g_unix_output_stream_get_fd")]
     fn get_fd<T: FromRawFd>(&self) -> T;
 
-    #[doc(alias = "g_unix_output_stream_set_close_fd")]
     unsafe fn set_close_fd(&self, close_fd: bool);
 }
 

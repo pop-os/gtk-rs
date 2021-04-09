@@ -26,7 +26,6 @@ glib::wrapper! {
 }
 
 impl Spinner {
-    #[doc(alias = "gtk_spinner_new")]
     pub fn new() -> Spinner {
         assert_initialized_main_thread!();
         unsafe { Widget::from_glib_none(ffi::gtk_spinner_new()).unsafe_cast() }
@@ -360,10 +359,8 @@ impl SpinnerBuilder {
 pub const NONE_SPINNER: Option<&Spinner> = None;
 
 pub trait SpinnerExt: 'static {
-    #[doc(alias = "gtk_spinner_start")]
     fn start(&self);
 
-    #[doc(alias = "gtk_spinner_stop")]
     fn stop(&self);
 
     fn get_property_active(&self) -> bool;

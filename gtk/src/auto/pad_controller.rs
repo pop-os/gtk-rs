@@ -24,7 +24,6 @@ glib::wrapper! {
 }
 
 impl PadController {
-    #[doc(alias = "gtk_pad_controller_new")]
     pub fn new<P: IsA<Window>, Q: IsA<gio::ActionGroup>>(
         window: &P,
         group: &Q,
@@ -40,7 +39,6 @@ impl PadController {
         }
     }
 
-    #[doc(alias = "gtk_pad_controller_set_action")]
     pub fn set_action(
         &self,
         type_: PadActionType,

@@ -13,7 +13,6 @@ use std::ptr;
 impl FileChooserDialog {
     // TODO: Keep the other constructor with buttons support as the only constructor (this one was
     //       left for compatibility) and rename it to `new` for consistency.
-    #[doc(alias = "gtk_file_chooser_dialog_new")]
     pub fn new<T: IsA<Window>>(
         title: Option<&str>,
         parent: Option<&T>,
@@ -31,7 +30,6 @@ impl FileChooserDialog {
         }
     }
 
-    #[doc(alias = "gtk_file_chooser_dialog_new")]
     pub fn with_buttons<T: IsA<Window>>(
         title: Option<&str>,
         parent: Option<&T>,

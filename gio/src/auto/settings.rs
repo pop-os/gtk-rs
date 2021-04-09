@@ -24,12 +24,10 @@ glib::wrapper! {
 }
 
 impl Settings {
-    #[doc(alias = "g_settings_new")]
     pub fn new(schema_id: &str) -> Settings {
         unsafe { from_glib_full(ffi::g_settings_new(schema_id.to_glib_none().0)) }
     }
 
-    #[doc(alias = "g_settings_new_full")]
     pub fn new_full<P: IsA<SettingsBackend>>(
         schema: &SettingsSchema,
         backend: Option<&P>,
@@ -44,7 +42,6 @@ impl Settings {
         }
     }
 
-    #[doc(alias = "g_settings_new_with_backend")]
     pub fn with_backend<P: IsA<SettingsBackend>>(schema_id: &str, backend: &P) -> Settings {
         unsafe {
             from_glib_full(ffi::g_settings_new_with_backend(
@@ -54,7 +51,6 @@ impl Settings {
         }
     }
 
-    #[doc(alias = "g_settings_new_with_backend_and_path")]
     pub fn with_backend_and_path<P: IsA<SettingsBackend>>(
         schema_id: &str,
         backend: &P,
@@ -69,7 +65,6 @@ impl Settings {
         }
     }
 
-    #[doc(alias = "g_settings_new_with_path")]
     pub fn with_path(schema_id: &str, path: &str) -> Settings {
         unsafe {
             from_glib_full(ffi::g_settings_new_with_path(
@@ -79,14 +74,12 @@ impl Settings {
         }
     }
 
-    #[doc(alias = "g_settings_sync")]
     pub fn sync() {
         unsafe {
             ffi::g_settings_sync();
         }
     }
 
-    #[doc(alias = "g_settings_unbind")]
     pub fn unbind<P: IsA<glib::Object>>(object: &P, property: &str) {
         unsafe {
             ffi::g_settings_unbind(object.as_ref().to_glib_none().0, property.to_glib_none().0);
@@ -97,10 +90,8 @@ impl Settings {
 pub const NONE_SETTINGS: Option<&Settings> = None;
 
 pub trait SettingsExt: 'static {
-    #[doc(alias = "g_settings_apply")]
     fn apply(&self);
 
-    #[doc(alias = "g_settings_bind_writable")]
     fn bind_writable<P: IsA<glib::Object>>(
         &self,
         key: &str,
@@ -109,121 +100,85 @@ pub trait SettingsExt: 'static {
         inverted: bool,
     );
 
-    #[doc(alias = "g_settings_create_action")]
     fn create_action(&self, key: &str) -> Action;
 
-    #[doc(alias = "g_settings_delay")]
     fn delay(&self);
 
-    //#[doc(alias = "g_settings_get")]
     //fn get(&self, key: &str, format: &str, : /*Unknown conversion*//*Unimplemented*/Fundamental: VarArgs);
 
-    #[doc(alias = "g_settings_get_boolean")]
     fn get_boolean(&self, key: &str) -> bool;
 
-    #[doc(alias = "g_settings_get_child")]
     fn get_child(&self, name: &str) -> Settings;
 
-    #[doc(alias = "g_settings_get_default_value")]
     fn get_default_value(&self, key: &str) -> Option<glib::Variant>;
 
-    #[doc(alias = "g_settings_get_double")]
     fn get_double(&self, key: &str) -> f64;
 
-    #[doc(alias = "g_settings_get_enum")]
     fn get_enum(&self, key: &str) -> i32;
 
-    #[doc(alias = "g_settings_get_flags")]
     fn get_flags(&self, key: &str) -> u32;
 
-    #[doc(alias = "g_settings_get_has_unapplied")]
     fn get_has_unapplied(&self) -> bool;
 
-    #[doc(alias = "g_settings_get_int")]
     fn get_int(&self, key: &str) -> i32;
 
     #[cfg(any(feature = "v2_50", feature = "dox"))]
     #[cfg_attr(feature = "dox", doc(cfg(feature = "v2_50")))]
-    #[doc(alias = "g_settings_get_int64")]
     fn get_int64(&self, key: &str) -> i64;
 
-    //#[doc(alias = "g_settings_get_mapped")]
     //fn get_mapped(&self, key: &str, mapping: /*Unimplemented*/FnMut(&glib::Variant, /*Unimplemented*/Option<Fundamental: Pointer>) -> bool, user_data: /*Unimplemented*/Option<Fundamental: Pointer>) -> /*Unimplemented*/Option<Fundamental: Pointer>;
 
-    #[doc(alias = "g_settings_get_string")]
     fn get_string(&self, key: &str) -> glib::GString;
 
-    #[doc(alias = "g_settings_get_strv")]
     fn get_strv(&self, key: &str) -> Vec<glib::GString>;
 
-    #[doc(alias = "g_settings_get_uint")]
     fn get_uint(&self, key: &str) -> u32;
 
     #[cfg(any(feature = "v2_50", feature = "dox"))]
     #[cfg_attr(feature = "dox", doc(cfg(feature = "v2_50")))]
-    #[doc(alias = "g_settings_get_uint64")]
     fn get_uint64(&self, key: &str) -> u64;
 
-    #[doc(alias = "g_settings_get_user_value")]
     fn get_user_value(&self, key: &str) -> Option<glib::Variant>;
 
-    #[doc(alias = "g_settings_get_value")]
     fn get_value(&self, key: &str) -> glib::Variant;
 
-    #[doc(alias = "g_settings_is_writable")]
     fn is_writable(&self, name: &str) -> bool;
 
-    #[doc(alias = "g_settings_list_children")]
     fn list_children(&self) -> Vec<glib::GString>;
 
     #[cfg_attr(feature = "v2_46", deprecated)]
-    #[doc(alias = "g_settings_list_keys")]
     fn list_keys(&self) -> Vec<glib::GString>;
 
-    #[doc(alias = "g_settings_reset")]
     fn reset(&self, key: &str);
 
-    #[doc(alias = "g_settings_revert")]
     fn revert(&self);
 
-    //#[doc(alias = "g_settings_set")]
     //fn set(&self, key: &str, format: &str, : /*Unknown conversion*//*Unimplemented*/Fundamental: VarArgs) -> bool;
 
-    #[doc(alias = "g_settings_set_boolean")]
     fn set_boolean(&self, key: &str, value: bool) -> Result<(), glib::error::BoolError>;
 
-    #[doc(alias = "g_settings_set_double")]
     fn set_double(&self, key: &str, value: f64) -> Result<(), glib::error::BoolError>;
 
-    #[doc(alias = "g_settings_set_enum")]
     fn set_enum(&self, key: &str, value: i32) -> Result<(), glib::error::BoolError>;
 
-    #[doc(alias = "g_settings_set_flags")]
     fn set_flags(&self, key: &str, value: u32) -> Result<(), glib::error::BoolError>;
 
-    #[doc(alias = "g_settings_set_int")]
     fn set_int(&self, key: &str, value: i32) -> Result<(), glib::error::BoolError>;
 
     #[cfg(any(feature = "v2_50", feature = "dox"))]
     #[cfg_attr(feature = "dox", doc(cfg(feature = "v2_50")))]
-    #[doc(alias = "g_settings_set_int64")]
     fn set_int64(&self, key: &str, value: i64) -> Result<(), glib::error::BoolError>;
 
-    #[doc(alias = "g_settings_set_string")]
     fn set_string(&self, key: &str, value: &str) -> Result<(), glib::error::BoolError>;
 
-    #[doc(alias = "g_settings_set_strv")]
     fn set_strv(&self, key: &str, value: &[&str]) -> Result<(), glib::error::BoolError>;
 
-    #[doc(alias = "g_settings_set_uint")]
     fn set_uint(&self, key: &str, value: u32) -> Result<(), glib::error::BoolError>;
 
     #[cfg(any(feature = "v2_50", feature = "dox"))]
     #[cfg_attr(feature = "dox", doc(cfg(feature = "v2_50")))]
-    #[doc(alias = "g_settings_set_uint64")]
     fn set_uint64(&self, key: &str, value: u64) -> Result<(), glib::error::BoolError>;
 
-    #[doc(alias = "g_settings_set_value")]
     fn set_value(&self, key: &str, value: &glib::Variant) -> Result<(), glib::error::BoolError>;
 
     fn get_property_backend(&self) -> Option<SettingsBackend>;

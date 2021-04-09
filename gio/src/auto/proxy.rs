@@ -22,7 +22,6 @@ glib::wrapper! {
 }
 
 impl Proxy {
-    #[doc(alias = "g_proxy_get_default_for_protocol")]
     pub fn get_default_for_protocol(protocol: &str) -> Option<Proxy> {
         unsafe {
             from_glib_full(ffi::g_proxy_get_default_for_protocol(
@@ -35,7 +34,6 @@ impl Proxy {
 pub const NONE_PROXY: Option<&Proxy> = None;
 
 pub trait ProxyExt: 'static {
-    #[doc(alias = "g_proxy_connect")]
     fn connect<P: IsA<IOStream>, Q: IsA<ProxyAddress>, R: IsA<Cancellable>>(
         &self,
         connection: &P,
@@ -43,7 +41,6 @@ pub trait ProxyExt: 'static {
         cancellable: Option<&R>,
     ) -> Result<IOStream, glib::Error>;
 
-    #[doc(alias = "g_proxy_connect_async")]
     fn connect_async<
         P: IsA<IOStream>,
         Q: IsA<ProxyAddress>,
@@ -66,7 +63,6 @@ pub trait ProxyExt: 'static {
         proxy_address: &Q,
     ) -> Pin<Box_<dyn std::future::Future<Output = Result<IOStream, glib::Error>> + 'static>>;
 
-    #[doc(alias = "g_proxy_supports_hostname")]
     fn supports_hostname(&self) -> bool;
 }
 

@@ -29,7 +29,6 @@ glib::wrapper! {
 }
 
 impl GestureSwipe {
-    #[doc(alias = "gtk_gesture_swipe_new")]
     pub fn new<P: IsA<Widget>>(widget: &P) -> GestureSwipe {
         skip_assert_initialized!();
         unsafe {
@@ -38,7 +37,6 @@ impl GestureSwipe {
         }
     }
 
-    #[doc(alias = "gtk_gesture_swipe_get_velocity")]
     pub fn get_velocity(&self) -> Option<(f64, f64)> {
         unsafe {
             let mut velocity_x = mem::MaybeUninit::uninit();

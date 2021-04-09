@@ -34,7 +34,6 @@ glib::wrapper! {
 }
 
 impl ModelButton {
-    #[doc(alias = "gtk_model_button_new")]
     pub fn new() -> ModelButton {
         assert_initialized_main_thread!();
         unsafe { Widget::from_glib_none(ffi::gtk_model_button_new()).unsafe_cast() }

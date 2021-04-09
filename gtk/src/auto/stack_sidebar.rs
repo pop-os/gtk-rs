@@ -29,7 +29,6 @@ glib::wrapper! {
 }
 
 impl StackSidebar {
-    #[doc(alias = "gtk_stack_sidebar_new")]
     pub fn new() -> StackSidebar {
         assert_initialized_main_thread!();
         unsafe { Widget::from_glib_none(ffi::gtk_stack_sidebar_new()).unsafe_cast() }
@@ -392,10 +391,8 @@ impl StackSidebarBuilder {
 pub const NONE_STACK_SIDEBAR: Option<&StackSidebar> = None;
 
 pub trait StackSidebarExt: 'static {
-    #[doc(alias = "gtk_stack_sidebar_get_stack")]
     fn get_stack(&self) -> Option<Stack>;
 
-    #[doc(alias = "gtk_stack_sidebar_set_stack")]
     fn set_stack<P: IsA<Stack>>(&self, stack: &P);
 
     fn get_property_stack(&self) -> Option<Stack>;

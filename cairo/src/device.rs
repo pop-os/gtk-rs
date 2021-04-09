@@ -57,7 +57,6 @@ impl Device {
     }
 
     #[cfg(any(feature = "script", feature = "dox"))]
-    #[doc(alias = "cairo_script_create")]
     pub fn create<P: AsRef<Path>>(filename: P) -> Option<Device> {
         unsafe {
             let filename = filename.as_ref().to_string_lossy().into_owned();
@@ -72,7 +71,6 @@ impl Device {
     }
 
     #[cfg(any(feature = "script", feature = "dox"))]
-    #[doc(alias = "cairo_script_from_recording_surface")]
     pub fn from_recording_surface(&self, surface: &RecordingSurface) -> Result<(), Error> {
         unsafe {
             let status =
@@ -82,19 +80,16 @@ impl Device {
     }
 
     #[cfg(any(feature = "script", feature = "dox"))]
-    #[doc(alias = "cairo_script_get_mode")]
     pub fn get_mode(&self) -> ScriptMode {
         unsafe { ScriptMode::from(ffi::cairo_script_get_mode(self.to_raw_none())) }
     }
 
     #[cfg(any(feature = "script", feature = "dox"))]
-    #[doc(alias = "cairo_script_set_mode")]
     pub fn set_mode(&self, mode: ScriptMode) {
         unsafe { ffi::cairo_script_set_mode(self.to_raw_none(), mode.into()) }
     }
 
     #[cfg(any(feature = "script", feature = "dox"))]
-    #[doc(alias = "cairo_script_surface_create")]
     pub fn surface_create(
         &self,
         content: Content,
@@ -112,7 +107,6 @@ impl Device {
     }
 
     #[cfg(any(feature = "script", feature = "dox"))]
-    #[doc(alias = "cairo_script_surface_create_for_target")]
     pub fn surface_create_for_target(&self, target: &Surface) -> Result<Surface, Error> {
         unsafe {
             Ok(Surface::from_raw_full(
@@ -125,7 +119,6 @@ impl Device {
     }
 
     #[cfg(any(feature = "script", feature = "dox"))]
-    #[doc(alias = "cairo_script_write_comment")]
     pub fn write_comment(&self, comment: &str) {
         unsafe {
             let len = comment.len();
@@ -134,22 +127,18 @@ impl Device {
         }
     }
 
-    #[doc(alias = "cairo_device_finish")]
     pub fn finish(&self) {
         unsafe { ffi::cairo_device_finish(self.to_raw_none()) }
     }
 
-    #[doc(alias = "cairo_device_flush")]
     pub fn flush(&self) {
         unsafe { ffi::cairo_device_flush(self.to_raw_none()) }
     }
 
-    #[doc(alias = "cairo_device_get_type")]
     pub fn get_type(&self) -> DeviceType {
         unsafe { DeviceType::from(ffi::cairo_device_get_type(self.to_raw_none())) }
     }
 
-    #[doc(alias = "cairo_device_acquire")]
     pub fn acquire(&self) -> Result<DeviceAcquireGuard, Error> {
         unsafe {
             let status = ffi::cairo_device_acquire(self.to_raw_none());
@@ -162,38 +151,31 @@ impl Device {
         unsafe { ffi::cairo_device_release(self.to_raw_none()) }
     }
 
-    #[doc(alias = "cairo_device_observer_elapsed")]
     pub fn observer_elapsed(&self) -> f64 {
         unsafe { ffi::cairo_device_observer_elapsed(self.to_raw_none()) }
     }
 
-    #[doc(alias = "cairo_device_observer_fill_elapsed")]
     pub fn observer_fill_elapsed(&self) -> f64 {
         unsafe { ffi::cairo_device_observer_fill_elapsed(self.to_raw_none()) }
     }
 
-    #[doc(alias = "cairo_device_observer_glyphs_elapsed")]
     pub fn observer_glyphs_elapsed(&self) -> f64 {
         unsafe { ffi::cairo_device_observer_glyphs_elapsed(self.to_raw_none()) }
     }
 
-    #[doc(alias = "cairo_device_observer_mask_elapsed")]
     pub fn observer_mask_elapsed(&self) -> f64 {
         unsafe { ffi::cairo_device_observer_mask_elapsed(self.to_raw_none()) }
     }
 
-    #[doc(alias = "cairo_device_observer_paint_elapsed")]
     pub fn observer_paint_elapsed(&self) -> f64 {
         unsafe { ffi::cairo_device_observer_paint_elapsed(self.to_raw_none()) }
     }
 
-    #[doc(alias = "cairo_device_observer_stroke_elapsed")]
     pub fn observer_stroke_elapsed(&self) -> f64 {
         unsafe { ffi::cairo_device_observer_stroke_elapsed(self.to_raw_none()) }
     }
 
     #[cfg(any(feature = "xlib", feature = "xcb", feature = "dox"))]
-    #[doc(alias = "cairo_xlib_device_debug_cap_xrender_version")]
     pub fn debug_cap_xrender_version(&self, major_version: i32, minor_version: i32) {
         unsafe {
             match self.get_type() {
@@ -231,7 +213,6 @@ impl Device {
     }
 
     #[cfg(any(feature = "xlib", feature = "xcb", feature = "dox"))]
-    #[doc(alias = "cairo_xlib_device_debug_get_precision")]
     pub fn debug_get_precision(&self) -> i32 {
         unsafe {
             match self.get_type() {
@@ -261,7 +242,6 @@ impl Device {
     }
 
     #[cfg(any(feature = "xlib", feature = "xcb", feature = "dox"))]
-    #[doc(alias = "cairo_xlib_device_debug_set_precision")]
     pub fn debug_set_precision(&self, precision: i32) {
         unsafe {
             match self.get_type() {

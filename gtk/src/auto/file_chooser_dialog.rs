@@ -31,7 +31,6 @@ glib::wrapper! {
 }
 
 impl FileChooserDialog {
-    //#[doc(alias = "gtk_file_chooser_dialog_new")]
     //pub fn new<P: IsA<Window>>(title: Option<&str>, parent: Option<&P>, action: FileChooserAction, first_button_text: Option<&str>, : /*Unknown conversion*//*Unimplemented*/Fundamental: VarArgs) -> FileChooserDialog {
     //    unsafe { TODO: call ffi:gtk_file_chooser_dialog_new() }
     //}

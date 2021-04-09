@@ -17,7 +17,6 @@ glib::wrapper! {
 }
 
 impl DBusActionGroup {
-    #[doc(alias = "g_dbus_action_group_get")]
     pub fn get(
         connection: &DBusConnection,
         bus_name: Option<&str>,
