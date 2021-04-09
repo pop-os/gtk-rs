@@ -37,6 +37,7 @@ glib::wrapper! {
 }
 
 impl DBusConnection {
+    #[doc(alias = "g_dbus_connection_new_for_address_sync")]
     pub fn new_for_address_sync<P: IsA<Cancellable>>(
         address: &str,
         flags: DBusConnectionFlags,
@@ -60,6 +61,7 @@ impl DBusConnection {
         }
     }
 
+    #[doc(alias = "g_dbus_connection_new_sync")]
     pub fn new_sync<P: IsA<IOStream>, Q: IsA<Cancellable>>(
         stream: &P,
         guid: Option<&str>,
@@ -85,6 +87,7 @@ impl DBusConnection {
         }
     }
 
+    #[doc(alias = "g_dbus_connection_call")]
     pub fn call<
         P: IsA<Cancellable>,
         Q: FnOnce(Result<glib::Variant, glib::Error>) + Send + 'static,
@@ -177,6 +180,7 @@ impl DBusConnection {
         }))
     }
 
+    #[doc(alias = "g_dbus_connection_call_sync")]
     pub fn call_sync<P: IsA<Cancellable>>(
         &self,
         bus_name: Option<&str>,
@@ -214,6 +218,7 @@ impl DBusConnection {
 
     #[cfg(any(unix, feature = "dox"))]
     #[cfg_attr(feature = "dox", doc(cfg(unix)))]
+    #[doc(alias = "g_dbus_connection_call_with_unix_fd_list")]
     pub fn call_with_unix_fd_list<
         P: IsA<UnixFDList>,
         Q: IsA<Cancellable>,
@@ -326,6 +331,7 @@ impl DBusConnection {
 
     #[cfg(any(unix, feature = "dox"))]
     #[cfg_attr(feature = "dox", doc(cfg(unix)))]
+    #[doc(alias = "g_dbus_connection_call_with_unix_fd_list_sync")]
     pub fn call_with_unix_fd_list_sync<P: IsA<UnixFDList>, Q: IsA<Cancellable>>(
         &self,
         bus_name: Option<&str>,
@@ -365,6 +371,7 @@ impl DBusConnection {
         }
     }
 
+    #[doc(alias = "g_dbus_connection_close")]
     pub fn close<P: IsA<Cancellable>, Q: FnOnce(Result<(), glib::Error>) + Send + 'static>(
         &self,
         cancellable: Option<&P>,
@@ -412,6 +419,7 @@ impl DBusConnection {
         }))
     }
 
+    #[doc(alias = "g_dbus_connection_close_sync")]
     pub fn close_sync<P: IsA<Cancellable>>(
         &self,
         cancellable: Option<&P>,
@@ -431,6 +439,7 @@ impl DBusConnection {
         }
     }
 
+    #[doc(alias = "g_dbus_connection_emit_signal")]
     pub fn emit_signal(
         &self,
         destination_bus_name: Option<&str>,
@@ -458,6 +467,7 @@ impl DBusConnection {
         }
     }
 
+    #[doc(alias = "g_dbus_connection_flush")]
     pub fn flush<P: IsA<Cancellable>, Q: FnOnce(Result<(), glib::Error>) + Send + 'static>(
         &self,
         cancellable: Option<&P>,
@@ -505,6 +515,7 @@ impl DBusConnection {
         }))
     }
 
+    #[doc(alias = "g_dbus_connection_flush_sync")]
     pub fn flush_sync<P: IsA<Cancellable>>(
         &self,
         cancellable: Option<&P>,
@@ -524,6 +535,7 @@ impl DBusConnection {
         }
     }
 
+    #[doc(alias = "g_dbus_connection_get_capabilities")]
     pub fn get_capabilities(&self) -> DBusCapabilityFlags {
         unsafe {
             from_glib(ffi::g_dbus_connection_get_capabilities(
@@ -532,6 +544,7 @@ impl DBusConnection {
         }
     }
 
+    #[doc(alias = "g_dbus_connection_get_exit_on_close")]
     pub fn get_exit_on_close(&self) -> bool {
         unsafe {
             from_glib(ffi::g_dbus_connection_get_exit_on_close(
@@ -542,18 +555,22 @@ impl DBusConnection {
 
     #[cfg(any(feature = "v2_60", feature = "dox"))]
     #[cfg_attr(feature = "dox", doc(cfg(feature = "v2_60")))]
+    #[doc(alias = "g_dbus_connection_get_flags")]
     pub fn get_flags(&self) -> DBusConnectionFlags {
         unsafe { from_glib(ffi::g_dbus_connection_get_flags(self.to_glib_none().0)) }
     }
 
+    #[doc(alias = "g_dbus_connection_get_guid")]
     pub fn get_guid(&self) -> Option<glib::GString> {
         unsafe { from_glib_none(ffi::g_dbus_connection_get_guid(self.to_glib_none().0)) }
     }
 
+    #[doc(alias = "g_dbus_connection_get_last_serial")]
     pub fn get_last_serial(&self) -> u32 {
         unsafe { ffi::g_dbus_connection_get_last_serial(self.to_glib_none().0) }
     }
 
+    #[doc(alias = "g_dbus_connection_get_peer_credentials")]
     pub fn get_peer_credentials(&self) -> Option<Credentials> {
         unsafe {
             from_glib_none(ffi::g_dbus_connection_get_peer_credentials(
@@ -562,10 +579,12 @@ impl DBusConnection {
         }
     }
 
+    #[doc(alias = "g_dbus_connection_get_stream")]
     pub fn get_stream(&self) -> Option<IOStream> {
         unsafe { from_glib_none(ffi::g_dbus_connection_get_stream(self.to_glib_none().0)) }
     }
 
+    #[doc(alias = "g_dbus_connection_get_unique_name")]
     pub fn get_unique_name(&self) -> Option<glib::GString> {
         unsafe {
             from_glib_none(ffi::g_dbus_connection_get_unique_name(
@@ -574,14 +593,17 @@ impl DBusConnection {
         }
     }
 
+    #[doc(alias = "g_dbus_connection_is_closed")]
     pub fn is_closed(&self) -> bool {
         unsafe { from_glib(ffi::g_dbus_connection_is_closed(self.to_glib_none().0)) }
     }
 
+    //#[doc(alias = "g_dbus_connection_register_object")]
     //pub fn register_object(&self, object_path: &str, interface_info: &DBusInterfaceInfo, vtable: /*Ignored*/Option<&DBusInterfaceVTable>, user_data: /*Unimplemented*/Option<Fundamental: Pointer>) -> Result<(), glib::Error> {
     //    unsafe { TODO: call ffi:g_dbus_connection_register_object() }
     //}
 
+    #[doc(alias = "g_dbus_connection_send_message")]
     pub fn send_message(
         &self,
         message: &DBusMessage,
@@ -606,6 +628,7 @@ impl DBusConnection {
         }
     }
 
+    #[doc(alias = "g_dbus_connection_send_message_with_reply")]
     pub fn send_message_with_reply<
         P: IsA<Cancellable>,
         Q: FnOnce(Result<DBusMessage, glib::Error>) + Send + 'static,
@@ -681,6 +704,7 @@ impl DBusConnection {
         }))
     }
 
+    #[doc(alias = "g_dbus_connection_send_message_with_reply_sync")]
     pub fn send_message_with_reply_sync<P: IsA<Cancellable>>(
         &self,
         message: &DBusMessage,
@@ -709,6 +733,7 @@ impl DBusConnection {
         }
     }
 
+    #[doc(alias = "g_dbus_connection_set_exit_on_close")]
     pub fn set_exit_on_close(&self, exit_on_close: bool) {
         unsafe {
             ffi::g_dbus_connection_set_exit_on_close(
@@ -718,6 +743,7 @@ impl DBusConnection {
         }
     }
 
+    #[doc(alias = "g_dbus_connection_start_message_processing")]
     pub fn start_message_processing(&self) {
         unsafe {
             ffi::g_dbus_connection_start_message_processing(self.to_glib_none().0);
@@ -755,6 +781,7 @@ impl DBusConnection {
         }
     }
 
+    #[doc(alias = "g_dbus_connection_new")]
     pub fn new<
         P: IsA<IOStream>,
         Q: IsA<Cancellable>,
@@ -826,6 +853,7 @@ impl DBusConnection {
         }))
     }
 
+    #[doc(alias = "g_dbus_connection_new_for_address")]
     pub fn new_for_address<
         P: IsA<Cancellable>,
         Q: FnOnce(Result<DBusConnection, glib::Error>) + Send + 'static,

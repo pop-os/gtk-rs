@@ -128,6 +128,7 @@ pub fn init() -> Result<(), glib::BoolError> {
     }
 }
 
+#[doc(alias = "gtk_main_quit")]
 pub fn main_quit() {
     assert_initialized_main_thread!();
     unsafe {

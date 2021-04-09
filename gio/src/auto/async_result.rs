@@ -18,12 +18,16 @@ glib::wrapper! {
 pub const NONE_ASYNC_RESULT: Option<&AsyncResult> = None;
 
 pub trait AsyncResultExt: 'static {
+    #[doc(alias = "g_async_result_get_source_object")]
     fn get_source_object(&self) -> Option<glib::Object>;
 
+    //#[doc(alias = "g_async_result_get_user_data")]
     //fn get_user_data(&self) -> /*Unimplemented*/Option<Fundamental: Pointer>;
 
+    //#[doc(alias = "g_async_result_is_tagged")]
     //fn is_tagged(&self, source_tag: /*Unimplemented*/Option<Fundamental: Pointer>) -> bool;
 
+    #[doc(alias = "g_async_result_legacy_propagate_error")]
     fn legacy_propagate_error(&self) -> Result<(), glib::Error>;
 }
 

@@ -83,6 +83,7 @@ impl Type {
     /// The fundamental type from which all objects are derived
     pub const OBJECT: Self = Self(gobject_ffi::G_TYPE_OBJECT);
 
+    #[doc(alias = "g_type_name")]
     pub fn name<'a>(self) -> &'a str {
         match self.to_glib() {
             gobject_ffi::G_TYPE_INVALID => "<invalid>",
@@ -93,6 +94,7 @@ impl Type {
         }
     }
 
+    #[doc(alias = "g_type_qname")]
     pub fn qname(self) -> crate::Quark {
         match self.to_glib() {
             gobject_ffi::G_TYPE_INVALID => crate::Quark::from_string("<invalid>"),
@@ -100,10 +102,12 @@ impl Type {
         }
     }
 
+    #[doc(alias = "g_type_is_a")]
     pub fn is_a(self, other: Self) -> bool {
         unsafe { from_glib(gobject_ffi::g_type_is_a(self.to_glib(), other.to_glib())) }
     }
 
+    #[doc(alias = "g_type_parent")]
     pub fn parent(self) -> Option<Self> {
         unsafe {
             let parent: Self = from_glib(gobject_ffi::g_type_parent(self.to_glib()));
@@ -111,6 +115,7 @@ impl Type {
         }
     }
 
+    #[doc(alias = "g_type_children")]
     pub fn children(self) -> Vec<Self> {
         unsafe {
             let mut n_children = 0u32;
@@ -120,6 +125,7 @@ impl Type {
         }
     }
 
+    #[doc(alias = "g_type_interfaces")]
     pub fn interfaces(self) -> Vec<Self> {
         unsafe {
             let mut n_interfaces = 0u32;
@@ -129,6 +135,7 @@ impl Type {
         }
     }
 
+    #[doc(alias = "g_type_interface_prerequisites")]
     pub fn interface_prerequisites(self) -> Vec<Self> {
         match self {
             t if !t.is_a(Self::INTERFACE) => vec![],
@@ -142,6 +149,7 @@ impl Type {
         }
     }
 
+    #[doc(alias = "g_type_from_name")]
     pub fn from_name<'a, P: Into<&'a str>>(name: P) -> Option<Self> {
         unsafe {
             let type_: Self =
@@ -176,6 +184,7 @@ pub trait StaticType {
 }
 
 impl StaticType for Type {
+    #[doc(alias = "g_gtype_get_type")]
     fn static_type() -> Type {
         unsafe { from_glib(gobject_ffi::g_gtype_get_type()) }
     }
